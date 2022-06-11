@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.module.Module;
@@ -22,10 +23,10 @@ public class UUIDGrabModule implements Module
 {
 
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
 	@Override
 	public String getModuleName()
@@ -54,6 +55,7 @@ public class UUIDGrabModule implements Module
 			File file = new File(settings.getProperty("inputFile"));
 			FileFactory factory = new FileFactory(file);
 			String[] usernames = factory.getUsernames();
+			assert usernames != null;
 			for(String username : usernames)
 			{
 				long timestamp = System.currentTimeMillis() / 1000L;

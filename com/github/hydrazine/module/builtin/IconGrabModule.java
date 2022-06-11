@@ -80,12 +80,12 @@ public class IconGrabModule implements Module
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 				
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Client client = new Client(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
+        Client client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
                 
         client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
         {
             @Override
-            public void handle(Session session, ServerStatusInfo info) 
+            public void handle(ServerStatusInfo info)
             {
             	BufferedImage icon = info.getIcon();
             	BufferedImage newIcon = new BufferedImage(icon.getWidth(), icon.getHeight(), BufferedImage.TYPE_3BYTE_BGR);

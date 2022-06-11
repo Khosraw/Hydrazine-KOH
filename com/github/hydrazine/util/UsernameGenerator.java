@@ -13,9 +13,7 @@ import com.github.hydrazine.Hydrazine;
  */
 public class UsernameGenerator 
 {
-	
-	private final String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-	
+
 	public UsernameGenerator()
 	{
 		/*
@@ -67,6 +65,7 @@ public class UsernameGenerator
 		
 		for(int i = 0; i < 3+(int)(Math.random()*14); i++)
 		{
+			String allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
 			sb.append(allowedChars.split("")[(int)(Math.random() * allowedChars.length())]);
 		}
 			

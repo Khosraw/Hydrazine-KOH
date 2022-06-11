@@ -49,58 +49,43 @@ public class MinecraftStatusModule implements Module
 			BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String inputLine = br.readLine();
 						
-			String parts[] = inputLine.split(","); // 8 parts
-            
-            for(int i = 0; i < parts.length; i++)
-            {
-            	String info = parts[i];
-            	info = info.replace("[", "");
-            	info = info.replace("]", "");
-            	info = info.replace("{", "");
-            	info = info.replace("}", "");
-            	info = info.replace("\"", "");
-            	info = info.replace(" ", "");
-            	
-            	String[] subParts = info.split(":"); // 2 parts
-            	String service = subParts[0];
-            	String status = subParts[1];
-            	
-            	if(status.toLowerCase().equals("red"))
-            	{
-            		if(isUnix())
-            		{
-            			status = ANSI_RED + "unavailable" + ANSI_RESET;
-            		}
-            		else
-            		{
-                		status = "unavailable";
-            		}
-            	}
-            	else if(status.toLowerCase().equals("yellow"))
-            	{
-            		if(isUnix())
-            		{
-            			status = ANSI_YELLOW + "some issues" + ANSI_RESET;
-            		}
-            		else
-            		{
-                		status = "some issues";
-            		}
-            	}
-            	else if(status.toLowerCase().equals("green"))
-            	{
-            		if(isUnix())
-            		{
-            			status = ANSI_GREEN + "no issues" + ANSI_RESET;
-            		}
-            		else
-            		{
-                		status = "no issues";
-            		}
-            	}
-            	
-            	System.out.println("- [" + service + "]:	" + status);
-            }
+			String[] parts = inputLine.split(","); // 8 parts
+
+			for (String part : parts) {
+				String info = part;
+				info = info.replace("[", "");
+				info = info.replace("]", "");
+				info = info.replace("{", "");
+				info = info.replace("}", "");
+				info = info.replace("\"", "");
+				info = info.replace(" ", "");
+
+				String[] subParts = info.split(":"); // 2 parts
+				String service = subParts[0];
+				String status = subParts[1];
+
+				if (status.equalsIgnoreCase("red")) {
+					if (isUnix()) {
+						status = ANSI_RED + "unavailable" + ANSI_RESET;
+					} else {
+						status = "unavailable";
+					}
+				} else if (status.equalsIgnoreCase("yellow")) {
+					if (isUnix()) {
+						status = ANSI_YELLOW + "some issues" + ANSI_RESET;
+					} else {
+						status = "some issues";
+					}
+				} else if (status.equalsIgnoreCase("green")) {
+					if (isUnix()) {
+						status = ANSI_GREEN + "no issues" + ANSI_RESET;
+					} else {
+						status = "no issues";
+					}
+				}
+
+				System.out.println("- [" + service + "]:	" + status);
+			}
             
             br.close();            
 		} 

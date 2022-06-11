@@ -114,8 +114,8 @@ public class AltCheckerModule implements Module
 			
 			for(Credentials c : validCredentials)
 			{
-				s.append(c.getUsername()).append(":").append(c.getPassword()).append("\n");
-				System.out.println(c.getUsername() + ":" + c.getPassword());
+				s.append(c.username()).append(":").append(c.password()).append("\n");
+				System.out.println(c.username() + ":" + c.password());
 			}
 			
 			if(Boolean.parseBoolean(settings.getProperty("outputToFile")))
@@ -141,11 +141,11 @@ public class AltCheckerModule implements Module
 			
 			if(mp != null)
 			{
-				System.out.println(Hydrazine.infoPrefix + c.getUsername() + ":" + c.getPassword() + " is working");
+				System.out.println(Hydrazine.infoPrefix + c.username() + ":" + c.password() + " is working");
 				
 				if(Boolean.parseBoolean(settings.getProperty("outputToFile")))
 				{
-					String s = c.getUsername() + ":" + c.getPassword();
+					String s = c.username() + ":" + c.password();
 					
 					try 
 					{

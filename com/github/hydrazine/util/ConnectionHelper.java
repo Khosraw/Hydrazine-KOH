@@ -111,7 +111,7 @@ public class ConnectionHelper
 				}
 			}
 			
-			Client client = new Client(server.getHost(), server.getPort(), protocol, new TcpSessionFactory(proxy));
+			Client client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory(proxy));
 			
 			registerDefaultListeners(client);
 						
@@ -121,7 +121,7 @@ public class ConnectionHelper
 		}
 		else
 		{
-			Client client = new Client(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
+			Client client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
 			
 			registerDefaultListeners(client);
 						

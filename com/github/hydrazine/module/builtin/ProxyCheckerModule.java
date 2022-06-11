@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Objects;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Authenticator;
@@ -24,10 +25,10 @@ import com.github.hydrazine.util.ProxyChecker;
 public class ProxyCheckerModule implements Module
 {
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
 	// Output File
 	private File outputFile;
@@ -41,7 +42,7 @@ public class ProxyCheckerModule implements Module
 	@Override
 	public String getDescription() 
 	{
-		return "Checks the online status of the proxies supplied by \'-ap\' or \'-sp\'.";
+		return "Checks the online status of the proxies supplied by '-ap' or '-sp'.";
 	}
 
 	@Override
@@ -59,6 +60,7 @@ public class ProxyCheckerModule implements Module
 			if(Hydrazine.settings.getSetting("authproxy").contains(":"))
 			{
 				Proxy p = Authenticator.getAuthProxy();
+				assert p != null;
 				boolean isOnline = ProxyChecker.checkAuthProxy(p);
 				InetSocketAddress addr = (InetSocketAddress) p.address();
 
@@ -122,7 +124,8 @@ public class ProxyCheckerModule implements Module
 							System.exit(1);
 						}
 					}
-					
+
+					assert proxies != null;
 					for(Proxy p : proxies)
 					{
 						boolean isOnline = ProxyChecker.checkAuthProxy(p);
@@ -137,6 +140,7 @@ public class ProxyCheckerModule implements Module
 						{	
 							try
 							{
+								assert w != null;
 								w.write(addr.getAddress().getHostAddress() + ":" + addr.getPort());
 								w.newLine();
 							} 
@@ -163,7 +167,7 @@ public class ProxyCheckerModule implements Module
 				}
 				else
 				{
-					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch \'-ap\'");					
+					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch '-ap'");
 				}
 			}
 		}
@@ -171,7 +175,7 @@ public class ProxyCheckerModule implements Module
 		{
 			if(Hydrazine.settings.getSetting("socksproxy").contains(":"))
 			{
-				Proxy p = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(Hydrazine.settings.getSetting("socksproxy").split(":")[0], Integer.valueOf(Hydrazine.settings.getSetting("socksproxy").split(":")[1])));
+				Proxy p = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(Hydrazine.settings.getSetting("socksproxy").split(":")[0], Integer.parseInt(Hydrazine.settings.getSetting("socksproxy").split(":")[1])));
 				boolean isOnline = ProxyChecker.checkSocksProxy(p);
 				InetSocketAddress addr = (InetSocketAddress) p.address();
 
@@ -235,7 +239,8 @@ public class ProxyCheckerModule implements Module
 							System.exit(1);
 						}
 					}
-					
+
+					assert proxies != null;
 					for(Proxy p : proxies)
 					{
 						boolean isOnline = ProxyChecker.checkSocksProxy(p);
@@ -250,6 +255,7 @@ public class ProxyCheckerModule implements Module
 						{	
 							try
 							{
+								assert w != null;
 								w.write(addr.getAddress().getHostAddress() + ":" + addr.getPort());
 								w.newLine();
 							} 
@@ -276,7 +282,7 @@ public class ProxyCheckerModule implements Module
 				}
 				else
 				{
-					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch \'-sp\'");					
+					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch '-sp'");
 				}
 			}
 		}
@@ -299,7 +305,7 @@ public class ProxyCheckerModule implements Module
 	{
 		String answer = ModuleSettings.askUser("Output file:");
 		
-		if(!(answer.equals("") || answer.isEmpty()))
+		if(!(answer.isEmpty()))
 		{
 			settings.setProperty("outputFile", answer);
 		}

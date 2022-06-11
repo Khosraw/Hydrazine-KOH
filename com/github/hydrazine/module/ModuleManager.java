@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -47,12 +48,11 @@ public class ModuleManager
 		classLoader.close();
 		
 		boolean isPlugin = false;
-		
-		for(int i = 0; i < interfaces.length && !isPlugin; i++)
-		{
-			if(interfaces[i].getName().equals("com.github.hydrazine.module.Module"))
-			{
+
+		for (Class<?> anInterface : interfaces) {
+			if (anInterface.getName().equals("com.github.hydrazine.module.Module")) {
 				isPlugin = true;
+				break;
 			}
 		}
 		
@@ -77,9 +77,9 @@ public class ModuleManager
 	 */
 	public static File[] getJarFilesFromDir(File dir)
 	{
-		ArrayList<File> jarFiles = new ArrayList<File>();
+		ArrayList<File> jarFiles = new ArrayList<>();
 		
-		for(File f : dir.listFiles())
+		for(File f : Objects.requireNonNull(dir.listFiles()))
 		{
 			if(f.getName().endsWith(".jar"))
 			{
@@ -87,7 +87,7 @@ public class ModuleManager
 			}
 		}
 		
-		return jarFiles.toArray(new File[jarFiles.size()]);
+		return jarFiles.toArray(new File[0]);
 	}
 	
 }

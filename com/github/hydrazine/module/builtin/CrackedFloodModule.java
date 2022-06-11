@@ -62,7 +62,7 @@ public class CrackedFloodModule implements Module
 			System.exit(1);
 		}
 		
-		System.out.println(Hydrazine.infoPrefix + "Starting module \'" + getModuleName() + "\'. Press CTRL + C to exit.");
+		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 		
 		server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		
@@ -83,7 +83,7 @@ public class CrackedFloodModule implements Module
 		}
 		else
 		{
-			System.out.println(Hydrazine.warnPrefix + "This module hasn't been configured yet. Append the switch \'-c\' to the command to do so.");
+			System.out.println(Hydrazine.warnPrefix + "This module hasn't been configured yet. Append the switch '-c' to the command to do so.");
 			System.out.println(Hydrazine.warnPrefix + "Using default configuration. (5 bots; 1000ms delay)");
 		}
 		
@@ -132,7 +132,7 @@ public class CrackedFloodModule implements Module
 			}
 		}
 		// Load usernames from file
-		else if(settings.containsKey("useUsersFromList") && Boolean.valueOf(settings.getProperty("useUsersFromList")))
+		else if(settings.containsKey("useUsersFromList") && Boolean.parseBoolean(settings.getProperty("useUsersFromList")))
 		{
 			if(settings.containsKey("userList") && !settings.getProperty("userList").isEmpty())
 			{
@@ -141,7 +141,8 @@ public class CrackedFloodModule implements Module
 				for(int i = 0; i < bots; i++)
 				{
 					String[] usernames = ff.getUsernames();
-					
+
+					assert usernames != null;
 					if(usernames.length == 0)
 					{
 						System.out.println(Hydrazine.errorPrefix + "No usernames contained in file.");

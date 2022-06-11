@@ -172,8 +172,8 @@ public class Hydrazine
 			settings.setSetting("socksproxy", cmd.getOptionValue("sp"));
 		}
 		
-		settings.setSetting("host", server.getHost());
-		settings.setSetting("port", String.valueOf(server.getPort()));
+		settings.setSetting("host", server.host());
+		settings.setSetting("port", String.valueOf(server.port()));
 				
 		System.out.println(Hydrazine.infoPrefix + "Starting Hydrazine v" + Hydrazine.progVer + " at " + new Date() + "\n");
 		

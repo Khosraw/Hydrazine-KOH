@@ -3,6 +3,7 @@ package com.github.hydrazine.minecraft;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Objects;
 import java.util.Random;
 
 import org.spacehq.mc.auth.exception.request.RequestException;
@@ -34,15 +35,15 @@ public class Authenticator
 	 */
 	public MinecraftProtocol authenticate(Credentials creds, Proxy proxy)
 	{
-		MinecraftProtocol protocol = null;
+		MinecraftProtocol protocol;
 				
 		try 
 		{
-			protocol = new MinecraftProtocol(creds.getUsername(), creds.getPassword(), false, proxy);
+			protocol = new MinecraftProtocol(creds.username(), creds.password(), false, proxy);
 		} 
 		catch (RequestException e) 
 		{
-			System.out.println(Hydrazine.errorPrefix + "Could not authenticate " + creds.getUsername() + ":" + creds.getPassword() + " | " + e.getMessage());
+			System.out.println(Hydrazine.errorPrefix + "Could not authenticate " + creds.username() + ":" + creds.password() + " | " + e.getMessage());
 		}
 		
 		return protocol;
@@ -55,15 +56,15 @@ public class Authenticator
 	 */
 	public MinecraftProtocol authenticate(Credentials creds)
 	{
-		MinecraftProtocol protocol = null;
+		MinecraftProtocol protocol;
 		
 		try 
 		{
-			protocol = new MinecraftProtocol(creds.getUsername(), creds.getPassword(), false);
+			protocol = new MinecraftProtocol(creds.username(), creds.password(), false);
 		} 
 		catch (RequestException e) 
 		{
-			System.out.println(Hydrazine.errorPrefix + "Could not authenticate " + creds.getUsername() + ":" + creds.getPassword());	
+			System.out.println(Hydrazine.errorPrefix + "Could not authenticate " + creds.username() + ":" + creds.password());
 		}
 		
 		return protocol;
@@ -76,7 +77,7 @@ public class Authenticator
 	{
 		if(Hydrazine.settings.hasSetting("authproxy"))
 		{
-			Proxy proxy = null;
+			Proxy proxy;
 			
 			if(Hydrazine.settings.getSetting("authproxy").contains(":"))
 			{
@@ -87,7 +88,7 @@ public class Authenticator
 				}
 				catch(Exception e)
 				{
-					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch \'-ap\'");
+					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch '-ap'");
 					
 					return null;
 				}
@@ -100,11 +101,11 @@ public class Authenticator
 				{
 					Random r = new Random();
 					FileFactory authFactory = new FileFactory(authFile);
-					proxy = authFactory.getProxies(Proxy.Type.HTTP)[r.nextInt(authFactory.getProxies(Proxy.Type.HTTP).length)];
+					proxy = Objects.requireNonNull(authFactory.getProxies(Proxy.Type.HTTP))[r.nextInt(Objects.requireNonNull(authFactory.getProxies(Proxy.Type.HTTP)).length)];
 				}
 				else
 				{
-					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch \'-ap\'");
+					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch '-ap'");
 					
 					return null;
 				}
@@ -125,7 +126,7 @@ public class Authenticator
 	{
 		if(Hydrazine.settings.hasSetting("credentials"))
 		{
-			Credentials creds = null;
+			Credentials creds;
 			
 			try
 			{
@@ -134,7 +135,7 @@ public class Authenticator
 			}
 			catch(Exception e)
 			{
-				System.out.println(Hydrazine.errorPrefix + "Invalid value for switch \'-cr\'");
+				System.out.println(Hydrazine.errorPrefix + "Invalid value for switch '-cr'");
 				
 				return null;
 			}

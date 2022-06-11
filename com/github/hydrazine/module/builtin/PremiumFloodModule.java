@@ -1,6 +1,7 @@
 package com.github.hydrazine.module.builtin;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Random;
 
 import org.spacehq.mc.protocol.MinecraftProtocol;
@@ -29,10 +30,10 @@ import com.github.hydrazine.util.FileFactory;
 public class PremiumFloodModule implements Module
 {
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
 	@Override
 	public String getModuleName() 
@@ -59,7 +60,7 @@ public class PremiumFloodModule implements Module
 			System.exit(1);
 		}
 		
-		System.out.println(Hydrazine.infoPrefix + "Starting module \'" + getModuleName() + "\'. Press CTRL + C to exit.");
+		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 		
 		Authenticator auth = new Authenticator();
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
@@ -89,7 +90,7 @@ public class PremiumFloodModule implements Module
 			}
 			else
 			{
-				System.out.println(Hydrazine.errorPrefix + "Append the \'-c\' switch to configure the module.");
+				System.out.println(Hydrazine.errorPrefix + "Append the '-c' switch to configure the module.");
 			}
 			
 			return;
@@ -103,7 +104,8 @@ public class PremiumFloodModule implements Module
 			for(int i = 0; i < bots; i++)
 			{
 				Credentials[] credList = ff.getCredentials();
-				
+
+				assert credList != null;
 				if(credList.length == 0)
 				{
 					System.out.println(Hydrazine.errorPrefix + "No credentials contained in file.");
@@ -115,7 +117,7 @@ public class PremiumFloodModule implements Module
 				
 				Credentials creds = credList[r.nextInt(credList.length)];
 				
-				MinecraftProtocol protocol = null;
+				MinecraftProtocol protocol;
 				
 				if(Hydrazine.settings.hasSetting("authproxy"))
 				{

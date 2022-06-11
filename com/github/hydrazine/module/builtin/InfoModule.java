@@ -51,12 +51,12 @@ public class InfoModule implements Module
 		
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Client client = new Client(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
+        Client client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
                                 
         client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
         {
             @Override
-            public void handle(Session session, ServerStatusInfo info) 
+            public void handle(ServerStatusInfo info)
             {
                 System.out.println(Hydrazine.infoPrefix + "Version: " + info.getVersionInfo().getVersionName() + ", Protocol Version: " + info.getVersionInfo().getProtocolVersion());
                 System.out.println(Hydrazine.infoPrefix + "Player Count: " + info.getPlayerInfo().getOnlinePlayers() + " / " + info.getPlayerInfo().getMaxPlayers());
@@ -76,7 +76,7 @@ public class InfoModule implements Module
         client.getSession().setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() 
         {
             @Override
-            public void handle(Session session, long pingTime) 
+            public void handle(long pingTime)
             {
                 System.out.println(Hydrazine.infoPrefix + "Server Ping: " + pingTime + "ms");
                 

@@ -55,8 +55,6 @@ public record FileFactory(File file) {
 					content.add(p);
 				} catch (NumberFormatException ignored) {
 				}
-			} else {
-				// System.out.println("Invalid format: " + line);
 			}
 		}
 

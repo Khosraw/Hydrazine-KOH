@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -29,14 +30,11 @@ public class SkinStealerModule implements Module
 {
 
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
-	
-	// Output File
-	private File outputFile;
-	
+	private final ModuleSettings settings = new ModuleSettings(configFile);
+
 	@Override
 	public String getModuleName() 
 	{
@@ -63,6 +61,8 @@ public class SkinStealerModule implements Module
 		
 		if(Hydrazine.settings.hasSetting("username"))
 		{
+			// Output File
+			File outputFile;
 			if(path == null)
 			{
 				outputFile = new File(Hydrazine.settings.getSetting("username") + ".png");
@@ -131,7 +131,7 @@ public class SkinStealerModule implements Module
 			}
 			
 			URLConnection connection2;
-			BufferedReader br2 = null;
+			BufferedReader br2;
 			String inputLine2 = null;
 			
 			try 
@@ -147,7 +147,7 @@ public class SkinStealerModule implements Module
 				System.exit(1);
 			}		
 						
-			String parts[] = inputLine2.split(",");
+			String[] parts = inputLine2.split(",");
 			
 			if(parts.length > 3)
 			{
@@ -232,7 +232,7 @@ public class SkinStealerModule implements Module
 	{
 		String answer = ModuleSettings.askUser("Output file:");
 		
-		if(!(answer.equals("") || answer.isEmpty()))
+		if(!(answer.isEmpty()))
 		{
 			settings.setProperty("outputFile", answer);
 		}
