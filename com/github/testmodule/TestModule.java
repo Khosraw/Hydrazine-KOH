@@ -23,7 +23,7 @@ public class TestModule implements Module
 	@Override
 	public void start() 
 	{
-		System.out.println(Hydrazine.infoPrefix + "Module started at " + new Date().toString());
+		System.out.println(Hydrazine.infoPrefix + "Module started at " + new Date());
 		
 		stop("finished");
 	}
@@ -31,7 +31,7 @@ public class TestModule implements Module
 	@Override
 	public void stop(String cause) 
 	{
-		System.out.println(Hydrazine.infoPrefix + "Module stopped at " + new Date().toString() + ": " + cause);
+		System.out.println(Hydrazine.infoPrefix + "Module stopped at " + new Date() + ": " + cause);
 	}
 
 	@Override

@@ -12,11 +12,11 @@ import java.util.HashMap;
 public class Settings 
 {
 	
-	private HashMap<String, String> settings;
+	private final HashMap<String, String> settings;
 	
 	public Settings()
 	{
-		settings = new HashMap<String, String>();
+		settings = new HashMap<>();
 	}
 	
 	/**
@@ -32,10 +32,7 @@ public class Settings
 	 */
 	public void setSetting(String key, String value)
 	{
-		if(settings.containsKey(key))
-		{
-			settings.remove(key);
-		}
+		settings.remove(key);
 		
 		settings.put(key, value);
 	}

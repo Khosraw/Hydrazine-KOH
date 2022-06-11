@@ -1,6 +1,7 @@
 package com.github.hydrazine.module.builtin;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Random;
 
 import org.spacehq.mc.protocol.MinecraftProtocol;
@@ -29,10 +30,10 @@ import com.github.hydrazine.util.FileFactory;
 public class CrackedFloodModule implements Module
 {
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
 	private Server server;
 	

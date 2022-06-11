@@ -3,6 +3,7 @@ package com.github.hydrazine.util;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Objects;
 import java.util.Random;
 
 import org.spacehq.mc.protocol.MinecraftProtocol;
@@ -76,7 +77,7 @@ public class ConnectionHelper
 		// Check if socks proxy should be used
 		if(Hydrazine.settings.hasSetting("socksproxy"))
 		{
-			Proxy proxy = null;
+			Proxy proxy;
 			
 			if(Hydrazine.settings.getSetting("socksproxy").contains(":"))
 			{
@@ -100,7 +101,7 @@ public class ConnectionHelper
 				{
 					Random r = new Random();
 					FileFactory socksFactory = new FileFactory(socksFile);
-					proxy = socksFactory.getProxies(Proxy.Type.SOCKS)[r.nextInt(socksFactory.getProxies(Proxy.Type.SOCKS).length)];
+					proxy = Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS))[r.nextInt(Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS)).length)];
 				}
 				else
 				{

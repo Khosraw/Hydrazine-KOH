@@ -21,8 +21,8 @@ public class ModuleSettings extends Properties
 	
 	private static final long serialVersionUID = 8876149310557054184L;
 	
-	private File configFile = null;
-	private static Scanner scanner = new Scanner(System.in);
+	private File configFile;
+	private static final Scanner scanner = new Scanner(System.in);
 	
 	public ModuleSettings(File configFile)
 	{
@@ -123,10 +123,8 @@ public class ModuleSettings extends Properties
 	public static String askUser(String question)
 	{		
 		System.out.println(Hydrazine.inputPrefix + question);
-		
-		String reply = scanner.nextLine();
-				
-		return reply;
+
+		return scanner.nextLine();
 	}
 	
 	/**
@@ -141,14 +139,9 @@ public class ModuleSettings extends Properties
 		String reply = scanner.nextLine();
 				
 		// Check if answer is yes
-		if(reply.equalsIgnoreCase("y") || reply.equalsIgnoreCase("yes") || reply.equalsIgnoreCase("yeah")) // ;)
-		{
-			return true;
-		}
-		else // Treat any other answer as a no
-		{
-			return false;
-		}
+		// ;)
+		// Treat any other answer as a no
+		return reply.equalsIgnoreCase("y") || reply.equalsIgnoreCase("yes") || reply.equalsIgnoreCase("yeah");
 	}
 
 }

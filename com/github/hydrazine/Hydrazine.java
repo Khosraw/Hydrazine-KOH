@@ -2,6 +2,7 @@ package com.github.hydrazine;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import org.apache.commons.cli.CommandLine;
@@ -56,7 +57,7 @@ public class Hydrazine
 	public static Settings settings = null;
 		
 	// Loaded modules
-	public static ArrayList<Module> loadedModules = new ArrayList<Module>();
+	public static ArrayList<Module> loadedModules = new ArrayList<>();
 	
 	// Current module
 	public static Module currentModule = null;
@@ -174,7 +175,7 @@ public class Hydrazine
 		settings.setSetting("host", server.getHost());
 		settings.setSetting("port", String.valueOf(server.getPort()));
 				
-		System.out.println(Hydrazine.infoPrefix + "Starting Hydrazine v" + Hydrazine.progVer + " at " + new Date().toString() + "\n");
+		System.out.println(Hydrazine.infoPrefix + "Starting Hydrazine v" + Hydrazine.progVer + " at " + new Date() + "\n");
 		
 		// Start internal module
 		if(!settings.getSetting("module").contains(".jar"))
@@ -189,7 +190,7 @@ public class Hydrazine
 					{
 						m.configure();
 						
-						boolean answer = ModuleSettings.askUserYesNo("Start module \'" + m.getModuleName() + "\'?");
+						boolean answer = ModuleSettings.askUserYesNo("Start module '" + m.getModuleName() + "'?");
 						
 						if(answer)
 						{							
@@ -199,7 +200,7 @@ public class Hydrazine
 								
 								m.run();
 							}
-							catch(Exception e)
+							catch(Exception ignored)
 							{
 								
 							}
@@ -213,7 +214,7 @@ public class Hydrazine
 							
 							m.run();
 						}
-						catch(Exception e)
+						catch(Exception ignored)
 						{
 							
 						}
@@ -249,7 +250,7 @@ public class Hydrazine
 				{
 					m.configure();
 					
-					boolean answer = ModuleSettings.askUserYesNo("Start module \'" + m.getModuleName() + "\'?");
+					boolean answer = ModuleSettings.askUserYesNo("Start module '" + m.getModuleName() + "'?");
 					
 					if(answer)
 					{
@@ -329,15 +330,8 @@ public class Hydrazine
 	private static boolean hasEnvVar()
 	{
 		String myEnv = System.getenv(Hydrazine.modEnvVar);
-				
-		if(myEnv == null)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+
+		return myEnv != null;
 	}
 	
 	/*
@@ -345,7 +339,7 @@ public class Hydrazine
 	 */
 	private static Module[] getModulesFromEnvVar(ModuleManager mm)
 	{
-		ArrayList<Module> modules = new ArrayList<Module>();
+		ArrayList<Module> modules = new ArrayList<>();
 		String env = System.getenv(Hydrazine.modEnvVar);
 		File dir = new File(env);
 		
@@ -362,7 +356,7 @@ public class Hydrazine
 			}
 		}
 		
-		return modules.toArray(new Module[modules.size()]);
+		return modules.toArray(new Module[0]);
 	}
 	
 	/*
@@ -373,14 +367,8 @@ public class Hydrazine
 		if(hasEnvVar())
 		{
 			Module[] extModules = getModulesFromEnvVar(mm);
-			
-			if(extModules != null)
-			{
-				for(Module m : extModules)
-				{
-					loadedModules.add(m);
-				}
-			}
+
+			Collections.addAll(loadedModules, extModules);
 		}
 	}
 	

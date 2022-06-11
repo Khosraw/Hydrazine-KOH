@@ -2,6 +2,7 @@ package com.github.hydrazine.module.builtin;
 
 import java.io.File;
 import java.net.Proxy;
+import java.util.Objects;
 
 import org.spacehq.mc.protocol.MinecraftProtocol;
 import org.spacehq.mc.protocol.data.game.values.MessageType;
@@ -32,10 +33,10 @@ import com.github.hydrazine.util.ConnectionHelper;
 public class ChatReaderModule implements Module
 {
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here	
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
 	@Override
 	public String getModuleName() 
@@ -62,7 +63,7 @@ public class ChatReaderModule implements Module
 			System.exit(1);
 		}
 		
-		System.out.println(Hydrazine.infoPrefix + "Starting module \'" + getModuleName() + "\'. Press CTRL + C to exit.");
+		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 				
 		Authenticator auth = new Authenticator();
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
@@ -123,25 +124,26 @@ public class ChatReaderModule implements Module
 		else if(Hydrazine.settings.hasSetting("credentials"))
 		{
 		    Credentials creds = Authenticator.getCredentials();
-			Client client = null;
-			MinecraftProtocol protocol = null;
+			Client client;
+			MinecraftProtocol protocol;
 			
 			// Check if auth proxy should be used
 			if(Hydrazine.settings.hasSetting("authproxy"))
 			{
 				Proxy proxy = Authenticator.getAuthProxy();
-				
+
+				assert creds != null;
 				protocol = auth.authenticate(creds, proxy);
-				
-				client = ConnectionHelper.connect(protocol, server);
+
 			}
 			else
-			{				
+			{
+				assert creds != null;
 				protocol = auth.authenticate(creds);
-				
-				client = ConnectionHelper.connect(protocol, server);
+
 			}
-						
+			client = ConnectionHelper.connect(protocol, server);
+
 			registerListeners(client);
 			
 			while(client.getSession().isConnected())
@@ -312,21 +314,19 @@ public class ChatReaderModule implements Module
 							String builder = line;
 								                		       
 							// Filter out color codes
-							if(builder.contains("§"))
+							if(builder.contains("ï¿½"))
 							{
-								int count = builder.length() - builder.replace("§", "").length();
+								int count = builder.length() - builder.replace("ï¿½", "").length();
 								
 								for(int i = 0; i < count; i++)
 								{
-									int index = builder.indexOf("§");
+									int index = builder.indexOf("ï¿½");
 									
 									if(index > (-1)) // Check if index is invalid, happens sometimes.
 									{		
 										String buf = builder.substring(index, index + 2);
-										
-										String repl = builder.replace(buf, "");
-										                				
-										builder = repl;
+
+										builder = builder.replace(buf, "");
 									}
 								}
 								

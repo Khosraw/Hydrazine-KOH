@@ -3,6 +3,7 @@ package com.github.hydrazine.module.builtin;
 import java.io.File;
 import java.io.IOException;
 import java.net.Proxy;
+import java.util.Objects;
 import java.util.Scanner;
 
 import org.spacehq.mc.protocol.MinecraftProtocol;
@@ -35,12 +36,12 @@ public class ConsoleClientModule implements Module
 {
 
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
-	private Scanner sc = new Scanner(System.in);
+	private final Scanner sc = new Scanner(System.in);
 	
 	@Override
 	public String getModuleName() 
@@ -67,7 +68,7 @@ public class ConsoleClientModule implements Module
 			System.exit(1);
 		}
 		
-		System.out.println(Hydrazine.infoPrefix + "Starting module \'" + getModuleName() + "\'. Press CTRL + C to exit.");
+		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 		
 		System.out.println(Hydrazine.infoPrefix + "Note: You can send a message x amount of times by adding a '%x' to the message. (Without the quotes)");
 				
@@ -96,19 +97,21 @@ public class ConsoleClientModule implements Module
 		else if(Hydrazine.settings.hasSetting("credentials"))
 		{
 			Credentials creds = Authenticator.getCredentials();
-			Client client = null;
+			Client client;
 			
 			// Check if auth proxy should be used
 			if(Hydrazine.settings.hasSetting("authproxy"))
 			{
 				Proxy proxy = Authenticator.getAuthProxy();
-				
+
+				assert creds != null;
 				MinecraftProtocol protocol = auth.authenticate(creds, proxy);
 				
 				client = ConnectionHelper.connect(protocol, server);
 			}
 			else
-			{				
+			{
+				assert creds != null;
 				MinecraftProtocol protocol = auth.authenticate(creds);
 				
 				client = ConnectionHelper.connect(protocol, server);
@@ -137,16 +140,16 @@ public class ConsoleClientModule implements Module
 		{
 			System.out.println(Hydrazine.infoPrefix + "Stopping module " + getModuleName() + ": " + cause);
 				
-			String s = null;
+			StringBuilder s = null;
 			for(String a : Hydrazine.arguments)
 			{
 				if(s == null)
 				{
-					s = a;
+					s = new StringBuilder(a);
 				}
 				else
 				{
-					s = s + " " + a;
+					s.append(" ").append(a);
 				}						
 			}
 			
@@ -173,6 +176,7 @@ public class ConsoleClientModule implements Module
 				
 				try 
 				{
+					assert p != null;
 					p.waitFor();
 				} 
 				catch (InterruptedException e) 
@@ -273,21 +277,19 @@ public class ConsoleClientModule implements Module
 							String builder = line;
 								                		       
 							// Filter out color codes
-							if(builder.contains("§"))
+							if(builder.contains("ï¿½"))
 							{
-								int count = builder.length() - builder.replace("§", "").length();
+								int count = builder.length() - builder.replace("ï¿½", "").length();
 								
 								for(int i = 0; i < count; i++)
 								{
-									int index = builder.indexOf("§");
+									int index = builder.indexOf("ï¿½");
 									
 									if(index > (-1)) // Check if index is invalid, happens sometimes.
 									{		
 										String buf = builder.substring(index, index + 2);
-										
-										String repl = builder.replace(buf, "");
-										                				
-										builder = repl;
+
+										builder = builder.replace(buf, "");
 									}
 								}
 								
@@ -410,11 +412,12 @@ public class ConsoleClientModule implements Module
 		}
 		
 		int sendTime = 1;
-		
+
+		assert line != null;
 		if(line.contains("%"))
 		{
 			int index = line.indexOf("%");
-			String end = line.substring(index, line.length());			
+			String end = line.substring(index);
 			String amount = end.replaceFirst("%", "");
 						
 			try
@@ -425,28 +428,24 @@ public class ConsoleClientModule implements Module
 			{
 				//Either %x not at the end of line
 				//Or x is not a number
-				sendTime = 1;
 			}
 			
 			// Remove "%x" from line
 			line = line.substring(0, index);
 			line = line.replaceAll("%", "");
 		}
-		
-		if(line != null)
+
+		for(int i = 0; i < sendTime; i++)
 		{
-			for(int i = 0; i < sendTime; i++)
+			client.getSession().send(new ClientChatPacket(line));
+
+			try
 			{
-				client.getSession().send(new ClientChatPacket(line));
-				
-				try 
-				{
-					Thread.sleep(sendDelay);
-				} 
-				catch (InterruptedException e)
-				{
-					e.printStackTrace();
-				}
+				Thread.sleep(sendDelay);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Objects;
+
 import org.spacehq.mc.protocol.MinecraftProtocol;
 
 import com.github.hydrazine.Hydrazine;
@@ -18,10 +20,10 @@ public class AltCheckerModule implements Module
 {
 
 	// Create new file where the configuration will be stored (Same folder as jar file)
-	private File configFile = new File(ClassLoader.getSystemClassLoader().getResource(".").getPath() + ".module_" + getModuleName() + ".conf");
+	private final File configFile = new File(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource(".")).getPath() + ".module_" + getModuleName() + ".conf");
 	
 	// Configuration settings are stored in here
-	private ModuleSettings settings = new ModuleSettings(configFile);
+	private final ModuleSettings settings = new ModuleSettings(configFile);
 	
 	// List of valid accounts
 	private ArrayList<Credentials> validCredentials;
@@ -51,11 +53,11 @@ public class AltCheckerModule implements Module
 		
 		settings.load();
 		
-		validCredentials = new ArrayList<Credentials>();
+		validCredentials = new ArrayList<>();
 		
 		Authenticator auth = new Authenticator();
 		
-		if(Boolean.valueOf(settings.getProperty("outputToFile")))
+		if(Boolean.parseBoolean(settings.getProperty("outputToFile")))
 		{
 			outputFile = new File(settings.getProperty("outputFile"));
 			
@@ -77,7 +79,8 @@ public class AltCheckerModule implements Module
 			File inputFile = new File(settings.getProperty("inputFile"));
 			FileFactory factory = new FileFactory(inputFile);
 			Credentials[] creds = factory.getCredentials();
-			
+
+			assert creds != null;
 			for(Credentials c : creds)
 			{
 				MinecraftProtocol mp;
@@ -98,7 +101,7 @@ public class AltCheckerModule implements Module
 				
 				try 
 				{
-					Thread.sleep(Long.valueOf(settings.getProperty("loginDelay")));
+					Thread.sleep(Long.parseLong(settings.getProperty("loginDelay")));
 				} 
 				catch (NumberFormatException | InterruptedException e)
 				{
@@ -107,19 +110,19 @@ public class AltCheckerModule implements Module
 			}
 			
 			System.out.println("\nWorking Accounts:");
-			String s = "";
+			StringBuilder s = new StringBuilder();
 			
 			for(Credentials c : validCredentials)
 			{
-				s = s + c.getUsername() + ":" + c.getPassword() + "\n";
+				s.append(c.getUsername()).append(":").append(c.getPassword()).append("\n");
 				System.out.println(c.getUsername() + ":" + c.getPassword());
 			}
 			
-			if(Boolean.valueOf(settings.getProperty("outputToFile")))
+			if(Boolean.parseBoolean(settings.getProperty("outputToFile")))
 			{
 				try 
 				{
-				    Files.write(outputFile.toPath(), s.getBytes(), StandardOpenOption.APPEND);
+				    Files.write(outputFile.toPath(), s.toString().getBytes(), StandardOpenOption.APPEND);
 				    
 				    System.out.println("\n" + Hydrazine.infoPrefix + "Saved working accounts to: " + outputFile.getAbsolutePath());
 				}
@@ -132,14 +135,15 @@ public class AltCheckerModule implements Module
 		else if(Hydrazine.settings.hasSetting("credentials"))
 		{
 			Credentials c = Authenticator.getCredentials();
-			
+
+			assert c != null;
 			MinecraftProtocol mp = auth.authenticate(c);
 			
 			if(mp != null)
 			{
 				System.out.println(Hydrazine.infoPrefix + c.getUsername() + ":" + c.getPassword() + " is working");
 				
-				if(Boolean.valueOf(settings.getProperty("outputToFile")))
+				if(Boolean.parseBoolean(settings.getProperty("outputToFile")))
 				{
 					String s = c.getUsername() + ":" + c.getPassword();
 					
@@ -173,7 +177,7 @@ public class AltCheckerModule implements Module
 	{
 		settings.setProperty("loadFromFile", String.valueOf(ModuleSettings.askUserYesNo("Load accounts from file?")));
 		
-		if(Boolean.valueOf(settings.getProperty("loadFromFile")))
+		if(Boolean.parseBoolean(settings.getProperty("loadFromFile")))
 		{
 			settings.setProperty("inputFile", ModuleSettings.askUser("File path:"));
 			settings.setProperty("loginDelay", String.valueOf(ModuleSettings.askUser("Delay between login attempts (in milliseconds):")));
@@ -181,7 +185,7 @@ public class AltCheckerModule implements Module
 				
 		settings.setProperty("outputToFile", String.valueOf(ModuleSettings.askUserYesNo("Output working accounts to file?")));
 		
-		if(Boolean.valueOf(settings.getProperty("outputToFile")))
+		if(Boolean.parseBoolean(settings.getProperty("outputToFile")))
 		{
 			settings.setProperty("outputFile", ModuleSettings.askUser("File path:"));
 		}
