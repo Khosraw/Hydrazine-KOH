@@ -175,7 +175,7 @@ public class Hydrazine
 		settings.setSetting("host", server.host());
 		settings.setSetting("port", String.valueOf(server.port()));
 				
-		System.out.println(Hydrazine.infoPrefix + "Starting Hydrazine v" + Hydrazine.progVer + " at " + new Date() + "\n");
+		System.out.println(Hydrazine.infoPrefix + "Starting Hydrazine-KOH v" + Hydrazine.progVer + " at " + new Date() + "\n");
 		
 		// Start internal module
 		if(!settings.getSetting("module").contains(".jar"))
