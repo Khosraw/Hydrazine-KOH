@@ -8,7 +8,7 @@
 
 
 
-Hydrazine is a command-line based, modular program that uses MCProtocolLib by Steveice10 ([link](https://github.com/Steveice10/MCProtocolLib)) to interact with a minecraft server. Its purpose is to check if the target is able to withstand a bot-based attack. Currently, the program supports *Minecraft 1.8.8, 1.12.1-1 and 1.15.2*.
+Hydrazine is a command-line based, modular program that uses MCProtocolLib by Steveice10 and forked by Khosraw ([link](https://github.com/Steveice10/MCProtocolLib)) to interact with a minecraft server. Its purpose is to check if the target is able to withstand a bot-based attack. Currently, the program supports *Minecraft 1.8.8, 1.12.1-1 and 1.15.2*.
 
 
 ## Features
@@ -46,7 +46,7 @@ Hydrazine has the capability to execute external modules by simply running the p
 *Example:* ```java -jar Hydrazine.jar -h localhost -m /home/user/Desktop/module.jar```
 
 ### Environment variable
-If you have a folder that contains some external modules, you can set up an environment variable called "**HYDRAZINE**" (has to be uppercase, without quotation marks) with the value being the file path to that folder (e.g. /home/user/modules/) in order to simplify the process of starting external modules. Now, if you'd like to start a module from that folder, you can simply type it's name instead of the full file path to start it.
+If you have a folder that contains some external modules, you can set up an environment variable called "**HYDRAZINE_KOH**" (has to be uppercase, without quotation marks) with the value being the file path to that folder (e.g. /home/user/modules/) in order to simplify the process of starting external modules. Now, if you'd like to start a module from that folder, you can simply type it's name instead of the full file path to start it.
 
 *Example:*
 

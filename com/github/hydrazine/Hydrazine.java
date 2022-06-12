@@ -48,7 +48,7 @@ public class Hydrazine
 	public static final String inputPrefix = "> ";
 	
 	// Module path environment variable
-	public static final String modEnvVar = "HYDRAZINE";
+	public static final String modEnvVar = "HYDRAZINE_KOH";
 	
 	// Program version
 	public static final double progVer = 1.1;
