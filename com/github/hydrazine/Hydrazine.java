@@ -335,7 +335,7 @@ public class Hydrazine
 	}
 	
 	/*
-	 * Gets the modules from the directory, specified by the "hydrazine" environment variable
+	 * Gets the modules from the directory, specified by the "hydrazine_koh" environment variable
 	 */
 	private static Module[] getModulesFromEnvVar(ModuleManager mm)
 	{
