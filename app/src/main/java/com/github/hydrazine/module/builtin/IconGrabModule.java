@@ -7,13 +7,12 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-import org.spacehq.mc.protocol.MinecraftConstants;
+import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import org.spacehq.mc.protocol.data.SubProtocol;
-import org.spacehq.mc.protocol.data.status.ServerStatusInfo;
-import org.spacehq.mc.protocol.data.status.handler.ServerInfoHandler;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.Session;
+import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
+import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
+import com.github.steveice10.packetlib.Session;
 import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
 import com.github.hydrazine.Hydrazine;
@@ -77,18 +76,17 @@ public class IconGrabModule implements Module
 			}
 		}
 		
-		Server server = new Server();
+		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 				
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Session client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
+        Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
                 
         client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
         {
-            @Override
             public void handle(ServerStatusInfo info)
             {
-            	BufferedImage icon = info.getIcon();
-            	BufferedImage newIcon = new BufferedImage(icon.getWidth(), icon.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+            	BufferedImage icon = info.getIconPng();
+				BufferedImage newIcon = new BufferedImage(icon.getWidth(), icon.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
             	
             	for(int i = 0; i < icon.getWidth(); i++)
             	{

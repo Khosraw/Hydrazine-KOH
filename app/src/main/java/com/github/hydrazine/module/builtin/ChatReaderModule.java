@@ -5,15 +5,13 @@ import java.net.Proxy;
 import java.util.Objects;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import org.spacehq.mc.protocol.data.game.values.MessageType;
-import org.spacehq.mc.protocol.data.message.TranslationMessage;
-import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.event.session.DisconnectedEvent;
-import org.spacehq.packetlib.event.session.PacketReceivedEvent;
-import org.spacehq.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
+import com.github.steveice10.packetlib.packet.Packet;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
+import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Authenticator;
@@ -66,13 +64,14 @@ public class ChatReaderModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 				
 		Authenticator auth = new Authenticator();
-		Server server = new Server();
+		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		
 		// Server has offline mode enabled
 		if(Hydrazine.settings.hasSetting("username") || Hydrazine.settings.hasSetting("genuser"))
 		{
 			String username = Authenticator.getUsername();
-			
+
+			assert username != null;
 			MinecraftProtocol protocol = new MinecraftProtocol(username);
 			
 			Session client = ConnectionHelper.connect(protocol, server);
@@ -234,9 +233,8 @@ public class ChatReaderModule implements Module
 		client.addListener(new SessionAdapter() 
 		{
 			@Override
-			public void packetReceived(PacketReceivedEvent event) 
-			{
-				if(event.getPacket() instanceof ServerJoinGamePacket) 
+			public void packetReceived(Session session, Packet packet) {
+				if(packet instanceof ClientboundLoginPacket)
 				{
 					if(settings.containsKey("loginCommand") && settings.containsKey("registerCommand"))
 					{
@@ -252,7 +250,7 @@ public class ChatReaderModule implements Module
 								e.printStackTrace();
 							}
 							
-							client.send(new ClientChatPacket(settings.getProperty("registerCommand")));
+							client.send(new ClientboundChatPacket(settings.getProperty("registerCommand")));
 							
 							// Sleep because there may be a command cooldown
 							try 
@@ -264,55 +262,20 @@ public class ChatReaderModule implements Module
 								e.printStackTrace();
 							}
 							
-							client.send(new ClientChatPacket(settings.getProperty("loginCommand")));
+							client.send(new ClientboundChatPacket(settings.getProperty("loginCommand")));
 						}
 				    }                    
 				}
-				else if(event.getPacket() instanceof ServerChatPacket)
+				else if(packet instanceof ServerboundChatPacket)
 				{
-					ServerChatPacket packet = ((ServerChatPacket) event.getPacket());
+					ServerboundChatPacket chatPacket = ((ServerboundChatPacket) packet);
 					
 					// Check if message is a chat message
-					if(packet.getType() != MessageType.NOTIFICATION)
-					{         
 						if(settings.containsKey("filterColorCodes") && settings.getProperty("filterColorCodes").equals("true"))
 						{
-							String line = packet.getMessage().getFullText();
-							
-							if(packet.getMessage() instanceof TranslationMessage)
-							{
-								TranslationMessage msg = (TranslationMessage) packet.getMessage();
-								
-								String message = "";
-								
-								if(msg.getTranslationKey().startsWith("chat.type"))
-								{
-									message = String.format("<%s> %s", (Object[]) msg.getTranslationParams());
-								}
-								else if(msg.getTranslationKey().equals("commands.message.display.incoming"))
-								{
-									message = String.format("[PM] <%s> %s", (Object[]) msg.getTranslationParams());					
-								}
-								else if(msg.getTranslationKey().startsWith("multiplayer.player"))
-								{
-									if(msg.getTranslationKey().endsWith("left"))
-									{
-										message = String.format("%s left the game.", (Object[]) msg.getTranslationParams());							
-									}
-									else if(msg.getTranslationKey().endsWith("joined"))
-									{
-										message = String.format("%s joined the game.", (Object[]) msg.getTranslationParams());	
-									}
-								}
-								
-								if(!message.equals(""))
-								{
-									line = message;
-								}
-							}
-															                		
+							String line = chatPacket.getMessage();
+
 							String builder = line;
-								                		       
 							// Filter out color codes
 							if(builder.contains("�"))
 							{
@@ -339,43 +302,7 @@ public class ChatReaderModule implements Module
 						}
 						else
 						{
-							if(packet.getMessage() instanceof TranslationMessage)
-							{
-								TranslationMessage msg = (TranslationMessage) packet.getMessage();
-																
-								if(msg.getTranslationKey().startsWith("chat.type"))
-								{
-									String message = String.format("<%s> %s", (Object[]) msg.getTranslationParams());
-									
-									System.out.println(message);
-								}
-								else if(msg.getTranslationKey().equals("commands.message.display.incoming"))
-								{
-									String message = String.format("[PM] <%s> %s", (Object[]) msg.getTranslationParams());
-									
-									System.out.println(message);
-								}
-								else if(msg.getTranslationKey().startsWith("multiplayer.player"))
-								{
-									if(msg.getTranslationKey().endsWith("left"))
-									{
-										String message = String.format("%s left the game.", (Object[]) msg.getTranslationParams());
-										
-										System.out.println(message);
-									}
-									else if(msg.getTranslationKey().endsWith("joined"))
-									{
-										String message = String.format("%s joined the game.", (Object[]) msg.getTranslationParams());
-										
-										System.out.println(message);
-									}
-								}
-							}
-							else
-							{
-								System.out.println(packet.getMessage().getFullText());
-							}
-						}
+								System.out.println(chatPacket.getMessage());
 					}
 				}
 			}

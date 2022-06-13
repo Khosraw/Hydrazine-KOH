@@ -8,15 +8,11 @@ import java.util.Scanner;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
-import org.spacehq.mc.protocol.data.game.values.MessageType;
-import org.spacehq.mc.protocol.data.message.TranslationMessage;
-import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.ServerChatPacket;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.event.session.DisconnectedEvent;
-import org.spacehq.packetlib.event.session.PacketReceivedEvent;
-import org.spacehq.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
+import com.github.steveice10.packetlib.packet.Packet;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Authenticator;
@@ -75,13 +71,14 @@ public class ConsoleClientModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Note: You can send a message x amount of times by adding a '%x' to the message. (Without the quotes)");
 				
 		Authenticator auth = new Authenticator();
-		Server server = new Server();
+		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		
 		// Server has offline mode enabled
 		if(Hydrazine.settings.hasSetting("username") || Hydrazine.settings.hasSetting("genuser"))
 		{
 			String username = Authenticator.getUsername();
-			
+
+			assert username != null;
 			MinecraftProtocol protocol = new MinecraftProtocol(username);
 			
 			Session client = ConnectionHelper.connect(protocol, server);
@@ -231,50 +228,17 @@ public class ConsoleClientModule implements Module
 		client.addListener(new SessionAdapter()
 		{
 			@Override
-			public void packetReceived(PacketReceivedEvent event) 
+			public void packetReceived(Session session, Packet packet)
 			{
-				if(event.getPacket() instanceof ServerChatPacket)
+				if(packet instanceof ServerboundChatPacket)
 				{
-					ServerChatPacket packet = ((ServerChatPacket) event.getPacket());
+					ServerboundChatPacket chatPacket = ((ServerboundChatPacket) packet);
 					
 					// Check if message is a chat message
-					if(packet.getType() != MessageType.NOTIFICATION)
-					{         
 						if(settings.containsKey("filterColorCodes") && settings.getProperty("filterColorCodes").equals("true"))
 						{
-							String line = packet.getMessage().getFullText();
+							String line = chatPacket.getMessage();
 							
-							if(packet.getMessage() instanceof TranslationMessage)
-							{
-								TranslationMessage msg = (TranslationMessage) packet.getMessage();
-								
-								String message = "";
-								
-								if(msg.getTranslationKey().startsWith("chat.type"))
-								{
-									message = String.format("<%s> %s", (Object[]) msg.getTranslationParams());
-								}
-								else if(msg.getTranslationKey().equals("commands.message.display.incoming"))
-								{
-									message = String.format("[PM] <%s> %s", (Object[]) msg.getTranslationParams());					
-								}
-								else if(msg.getTranslationKey().startsWith("multiplayer.player"))
-								{
-									if(msg.getTranslationKey().endsWith("left"))
-									{
-										message = String.format("%s left the game.", (Object[]) msg.getTranslationParams());							
-									}
-									else if(msg.getTranslationKey().endsWith("joined"))
-									{
-										message = String.format("%s joined the game.", (Object[]) msg.getTranslationParams());	
-									}
-								}
-								
-								if(!message.equals(""))
-								{
-									line = message;
-								}
-							}
 							String builder = line;
 							// Filter out color codes
 							if(builder.contains("�"))
@@ -300,51 +264,11 @@ public class ConsoleClientModule implements Module
 								System.out.println(Hydrazine.inputPrefix + line);
 							}
 						}
-						else
-						{
-							if(packet.getMessage() instanceof TranslationMessage)
-							{
-								TranslationMessage msg = (TranslationMessage) packet.getMessage();
-																
-								if(msg.getTranslationKey().startsWith("chat.type"))
-								{
-									String message = String.format("<%s> %s", (Object[]) msg.getTranslationParams());
-									
-									System.out.println(message);
-								}
-								else if(msg.getTranslationKey().equals("commands.message.display.incoming"))
-								{
-									String message = String.format("[PM] <%s> %s", (Object[]) msg.getTranslationParams());
-									
-									System.out.println(message);
-								}
-								else if(msg.getTranslationKey().startsWith("multiplayer.player"))
-								{
-									if(msg.getTranslationKey().endsWith("left"))
-									{
-										String message = String.format("%s left the game.", (Object[]) msg.getTranslationParams());
-										
-										System.out.println(message);
-									}
-									else if(msg.getTranslationKey().endsWith("joined"))
-									{
-										String message = String.format("%s joined the game.", (Object[]) msg.getTranslationParams());
-										
-										System.out.println(message);
-									}
-								}
-							}
-							else
-							{
-								System.out.println(packet.getMessage().getFullText());
-							}
-						}
-					}
 				}
 			}
 			
 			@Override
-			public void disconnected(DisconnectedEvent event) 
+			public void disconnected(DisconnectedEvent event)
 			{				
 				if(!settings.getProperty("reconnect").equals("true"))
 				{		
@@ -437,7 +361,7 @@ public class ConsoleClientModule implements Module
 
 		for(int i = 0; i < sendTime; i++)
 		{
-			client.send(new ClientChatPacket(line));
+			client.send(new ClientboundChatPacket(line));
 
 			try
 			{

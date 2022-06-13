@@ -5,12 +5,11 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
-import org.spacehq.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.event.session.DisconnectedEvent;
-import org.spacehq.packetlib.event.session.PacketReceivedEvent;
-import org.spacehq.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundChatPacket;
+import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
+import com.github.steveice10.packetlib.packet.Packet;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Authenticator;
@@ -64,7 +63,7 @@ public class CrackedFloodModule implements Module
 		
 		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 		
-		server = new Server();
+		server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		
 		int bots = 5;
 		int delay = 1000;
@@ -259,9 +258,9 @@ public class CrackedFloodModule implements Module
 		client.addListener(new SessionAdapter() 
 		{
 			@Override
-			public void packetReceived(PacketReceivedEvent event) 
+			public void packetReceived(Session session, Packet packet)
 			{
-			    if(event.getPacket() instanceof ServerJoinGamePacket) 
+			    if(packet != null)
 			    {
 			        if(settings.containsKey("sendMessageOnJoin") && settings.containsKey("messageJoin"))
 			        {
@@ -292,7 +291,7 @@ public class CrackedFloodModule implements Module
 			        			return;
 			        		}
 			        		
-			        		client.send(new ClientChatPacket(settings.getProperty("messageJoin")));
+			        		client.send(new ClientboundChatPacket(settings.getProperty("messageJoin")));
 			        		
 			        		if(settings.containsKey("secondMessageJoin") && !settings.getProperty("secondMessageJoin").isEmpty())
 			        		{
@@ -305,7 +304,7 @@ public class CrackedFloodModule implements Module
 				        			return;
 				        		}
 			        			
-			        			client.send(new ClientChatPacket(settings.getProperty("secondMessageJoin")));
+			        			client.send(new ClientboundChatPacket(settings.getProperty("secondMessageJoin")));
 			        		}
 			            }
 			        }
@@ -313,7 +312,7 @@ public class CrackedFloodModule implements Module
 			}
 			
 			@Override
-			public void disconnected(DisconnectedEvent event) 
+			public void disconnected(DisconnectedEvent event)
 			{
 				if(!(event.getReason().contains("The server is full") || event.getReason().contains("Internal network exception")))
 				{
@@ -324,7 +323,8 @@ public class CrackedFloodModule implements Module
 							if(Hydrazine.settings.hasSetting("genuser"))
 							{	
 								String username = Authenticator.getUsername();
-									
+
+								assert username != null;
 								MinecraftProtocol protocol = new MinecraftProtocol(username);
 								
 								Session client = ConnectionHelper.connect(protocol, server);
