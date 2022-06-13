@@ -7,10 +7,10 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.event.session.DisconnectedEvent;
-import org.spacehq.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundChatPacket;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.Session;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Authenticator;
@@ -68,13 +68,14 @@ public class ChatModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Note: You can send a message x amount of times by adding a '%x' to the message. (Without the quotes)");
 		
 		Authenticator auth = new Authenticator();
-		Server server = new Server();
+		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		
 		// Server has offline mode enabled
 		if(Hydrazine.settings.hasSetting("username") || Hydrazine.settings.hasSetting("genuser"))
 		{
 			String username = Authenticator.getUsername();
-			
+
+			assert username != null;
 			MinecraftProtocol protocol = new MinecraftProtocol(username);
 			
 			Session client = ConnectionHelper.connect(protocol, server);
@@ -234,7 +235,7 @@ public class ChatModule implements Module
 			e.printStackTrace();
 		}
 		
-		client.send(new ClientChatPacket(msg));
+		client.send(new ClientboundChatPacket(msg));
 		System.out.print(".");
 	}
 	
@@ -322,7 +323,7 @@ public class ChatModule implements Module
 			
 			for(int i = 0; i < sendTime; i++)
 			{
-				client.send(new ClientChatPacket(line));
+				client.send(new ClientboundChatPacket(line));
 				
 				try 
 				{

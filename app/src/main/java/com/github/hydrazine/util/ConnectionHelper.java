@@ -103,7 +103,7 @@ public class ConnectionHelper
 				}
 			}
 			
-			Session client = new Session(server.host(), server.port(), protocol, new TcpClientSession(server.host(), server.port(), protocol, proxyInfo);
+			Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, proxyInfo));
 			
 			registerDefaultListeners(client);
 						
@@ -113,7 +113,7 @@ public class ConnectionHelper
 		}
 		else
 		{
-			Session client = new Session(server.host(), server.port(), protocol, new TcpClientSession(server.host(), server.port(), protocol, new ProxyInfo()));
+			Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, new ProxyInfo()));
 			
 			registerDefaultListeners(client);
 						
