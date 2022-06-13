@@ -8,7 +8,7 @@
 
 
 
-Hydrazine is a command-line based, modular program that uses MCProtocolLib by Steveice10 and forked by Khosraw ([link](https://github.com/Steveice10/MCProtocolLib)) to interact with a minecraft server. Its purpose is to check if the target is able to withstand a bot-based attack. Currently, the program supports *Minecraft 1.8.8, 1.12.1-1 and 1.15.2*.
+Hydrazine-KOH is a command-line based, modular program that uses MCProtocolLib by Steveice10 and forked by Khosraw ([link](https://github.com/Steveice10/MCProtocolLib)) to interact with a minecraft server. Its purpose is to check if the target is able to withstand a bot-based attack. Currently, the program supports *Minecraft 1.8.8, 1.12.1-1 and 1.15.2*.
 
 
 ## Features
@@ -29,19 +29,19 @@ Hydrazine is a command-line based, modular program that uses MCProtocolLib by St
 * **skinstealer** - *Steals the skin of a player and saves it to your computer.*
 * **proxychecker** - *Checks the online status of the proxies supplied by '-ap' or '-sp'. (slow)*
 
-## How to use Hydrazine
+## How to use Hydrazine-KOH
 [Tutorial](https://github.com/xTACTIXzZ/Hydrazine/wiki/How-to-use-Hydrazine)
 
 ## Modules
 ### What are modules
-Modules are essential for Hydrazine to work. They add all of the functionality to the program and without them, Hydrazine would not be able to do anything.
+Modules are essential for Hydrazine-KOH to work. They add all of the functionality to the program and without them, Hydrazine-KOH would not be able to do anything.
 
 #### Built-in modules
-Hydrazine has some built-in modules that you can execute right from the beginning. To see a list of available modules, start Hydrazine with the '-l' switch. If you want to run a module from that list, you have to start Hydrazine with the '-h' and '-m' switch. '-h' needs to be followed by the target hostname or ip address and '-m' needs to be followed by the module name.
+Hydrazine-KOH has some built-in modules that you can execute right from the beginning. To see a list of available modules, start Hydrazine-KOH with the '-l' switch. If you want to run a module from that list, you have to start Hydrazine-KOH with the '-h' and '-m' switch. '-h' needs to be followed by the target hostname or ip address and '-m' needs to be followed by the module name.
 
 *Example:* ```java -jar Hydrazine.jar -h 127.0.0.1 -m info```
 #### External modules
-Hydrazine has the capability to execute external modules by simply running the program with the '-m' switch but this time it is followed by the absolute file path of the module.
+Hydrazine-KOH has the capability to execute external modules by simply running the program with the '-m' switch but this time it is followed by the absolute file path of the module.
 
 *Example:* ```java -jar Hydrazine.jar -h localhost -m /home/user/Desktop/module.jar```
 
