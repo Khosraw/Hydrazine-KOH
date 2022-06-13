@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
+import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import org.spacehq.mc.protocol.data.game.values.MessageType;
 import org.spacehq.mc.protocol.data.message.TranslationMessage;
 import org.spacehq.mc.protocol.packet.ingame.client.ClientChatPacket;
@@ -73,7 +75,7 @@ public class ConsoleClientModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Note: You can send a message x amount of times by adding a '%x' to the message. (Without the quotes)");
 				
 		Authenticator auth = new Authenticator();
-		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		Server server = new Server();
 		
 		// Server has offline mode enabled
 		if(Hydrazine.settings.hasSetting("username") || Hydrazine.settings.hasSetting("genuser"))
@@ -82,11 +84,11 @@ public class ConsoleClientModule implements Module
 			
 			MinecraftProtocol protocol = new MinecraftProtocol(username);
 			
-			Client client = ConnectionHelper.connect(protocol, server);
+			Session client = ConnectionHelper.connect(protocol, server);
 			
 			registerListeners(client);
 			
-			while(client.getSession().isConnected())
+			while(client.isConnected())
 			{					
 				doStuff(client, sc);
 			}
@@ -97,7 +99,7 @@ public class ConsoleClientModule implements Module
 		else if(Hydrazine.settings.hasSetting("credentials"))
 		{
 			Credentials creds = Authenticator.getCredentials();
-			Client client;
+			Session client;
 			
 			// Check if auth proxy should be used
 			if(Hydrazine.settings.hasSetting("authproxy"))
@@ -119,7 +121,7 @@ public class ConsoleClientModule implements Module
 			
 			registerListeners(client);
 			
-			while(client.getSession().isConnected())
+			while(client.isConnected())
 			{				
 				doStuff(client, sc);
 			}
@@ -224,9 +226,9 @@ public class ConsoleClientModule implements Module
 	/*
 	 * Registers the listeners in order to read the chat
 	 */
-	private void registerListeners(Client client)
+	private void registerListeners(Session client)
 	{
-		client.getSession().addListener(new SessionAdapter() 
+		client.addListener(new SessionAdapter()
 		{
 			@Override
 			public void packetReceived(PacketReceivedEvent event) 
@@ -273,9 +275,7 @@ public class ConsoleClientModule implements Module
 									line = message;
 								}
 							}
-															                		
 							String builder = line;
-								                		       
 							// Filter out color codes
 							if(builder.contains("�"))
 							{
@@ -376,7 +376,7 @@ public class ConsoleClientModule implements Module
 	/*
 	 * Does all of the chatting related things
 	 */
-	private void doStuff(Client client, Scanner sc)
+	private void doStuff(Session client, Scanner sc)
 	{		
 		int sendDelay = 1000;
 		
@@ -437,7 +437,7 @@ public class ConsoleClientModule implements Module
 
 		for(int i = 0; i < sendTime; i++)
 		{
-			client.getSession().send(new ClientChatPacket(line));
+			client.send(new ClientChatPacket(line));
 
 			try
 			{

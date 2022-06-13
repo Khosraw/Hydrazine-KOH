@@ -66,7 +66,7 @@ public class ChatReaderModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 				
 		Authenticator auth = new Authenticator();
-		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		Server server = new Server();
 		
 		// Server has offline mode enabled
 		if(Hydrazine.settings.hasSetting("username") || Hydrazine.settings.hasSetting("genuser"))
@@ -75,11 +75,11 @@ public class ChatReaderModule implements Module
 			
 			MinecraftProtocol protocol = new MinecraftProtocol(username);
 			
-			Client client = ConnectionHelper.connect(protocol, server);
+			Session client = ConnectionHelper.connect(protocol, server);
 			
 			registerListeners(client);
 			
-			while(client.getSession().isConnected())
+			while(client.isConnected())
 			{
 				try
 				{
@@ -93,7 +93,7 @@ public class ChatReaderModule implements Module
 			
 			if(!settings.getProperty("reconnect").equals("false"))
 			{
-				client.getSession().disconnect("");
+				client.disconnect("");
 				
 				try 
 				{
@@ -107,7 +107,7 @@ public class ChatReaderModule implements Module
 				client = ConnectionHelper.connect(protocol, server);
 				registerListeners(client);
 				
-				while(client.getSession().isConnected())
+				while(client.isConnected())
 				{
 					try 
 					{
@@ -124,7 +124,7 @@ public class ChatReaderModule implements Module
 		else if(Hydrazine.settings.hasSetting("credentials"))
 		{
 		    Credentials creds = Authenticator.getCredentials();
-			Client client;
+			Session client;
 			MinecraftProtocol protocol;
 			
 			// Check if auth proxy should be used
@@ -146,7 +146,7 @@ public class ChatReaderModule implements Module
 
 			registerListeners(client);
 			
-			while(client.getSession().isConnected())
+			while(client.isConnected())
 			{
 				try 
 				{
@@ -160,7 +160,7 @@ public class ChatReaderModule implements Module
 			
 			if(!settings.getProperty("reconnect").equals("false"))
 			{
-				client.getSession().disconnect("");
+				client.disconnect("");
 				
 				try 
 				{
@@ -174,7 +174,7 @@ public class ChatReaderModule implements Module
 				client = ConnectionHelper.connect(protocol, server);
 				registerListeners(client);
 				
-				while(client.getSession().isConnected())
+				while(client.isConnected())
 				{
 					try 
 					{
@@ -229,9 +229,9 @@ public class ChatReaderModule implements Module
 	/*
 	 * Register listeners
 	 */
-	private void registerListeners(Client client)
+	private void registerListeners(Session client)
 	{
-		client.getSession().addListener(new SessionAdapter() 
+		client.addListener(new SessionAdapter() 
 		{
 			@Override
 			public void packetReceived(PacketReceivedEvent event) 
@@ -252,7 +252,7 @@ public class ChatReaderModule implements Module
 								e.printStackTrace();
 							}
 							
-							client.getSession().send(new ClientChatPacket(settings.getProperty("registerCommand")));
+							client.send(new ClientChatPacket(settings.getProperty("registerCommand")));
 							
 							// Sleep because there may be a command cooldown
 							try 
@@ -264,7 +264,7 @@ public class ChatReaderModule implements Module
 								e.printStackTrace();
 							}
 							
-							client.getSession().send(new ClientChatPacket(settings.getProperty("loginCommand")));
+							client.send(new ClientChatPacket(settings.getProperty("loginCommand")));
 						}
 				    }                    
 				}

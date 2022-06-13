@@ -129,7 +129,7 @@ public class Hydrazine
 		settings = new Settings();
 		
 		// The target server
-		Server server = new Server(cmd.getOptionValue('h'), 25565);
+		Server server = new Server(cmd.getOptionValue("h"), 25565);
 		
 		// Validating options
 		if(cmd.hasOption('p')) 
@@ -145,7 +145,7 @@ public class Hydrazine
 				System.out.println(Hydrazine.errorPrefix + "The specified port is not a valid number. Using default port. (25565)");
 			}
 			
-			server = new Server(cmd.getOptionValue('h'), port);
+			server = new Server(cmd.getOptionValue(cmd.getOptionValue("h")), port);
 		}
 		if(cmd.hasOption('m'))
 		{
@@ -172,8 +172,8 @@ public class Hydrazine
 			settings.setSetting("socksproxy", cmd.getOptionValue("sp"));
 		}
 		
-		settings.setSetting("host", server.host());
-		settings.setSetting("port", String.valueOf(server.port()));
+		settings.setSetting("host", server.getHost());
+		settings.setSetting("port", String.valueOf(server.getPort()));
 				
 		System.out.println(Hydrazine.infoPrefix + "Starting Hydrazine-KOH v" + Hydrazine.progVer + " at " + new Date() + "\n");
 		

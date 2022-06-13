@@ -5,26 +5,26 @@ package com.github.hydrazine.minecraft;
  * <p>
  * This class represents a minecraft server.
  */
-public class Server(String host, int port) {
+public class Server {
+	private final String host;
+	private final int port;
 
-	public Server(String h, int i) {
-		h = this.host();
-		i = this.port();
+	public Server(String host, int port) {
+		this.host = host;
+		this.port = port;
 	}
 
 	/**
 	 * @return The hostname/ip address of the server
 	 */
-	@Override
-	public String host() {
+	public String getHost() {
 		return host;
 	}
 
 	/**
 	 * @return The port of the server
 	 */
-	@Override
-	public int port() {
+	public int getPort() {
 		return port;
 	}
 

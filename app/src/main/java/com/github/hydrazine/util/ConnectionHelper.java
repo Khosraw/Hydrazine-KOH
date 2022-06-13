@@ -91,7 +91,7 @@ public class ConnectionHelper
 				if(socksFile.exists())
 				{
 					Random r = new Random();
-					FileFactory socksFactory = new FileFactory(socksFile);
+					FileFactory socksFactory = new FileFactory();
 					proxyInfo = Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS))[r.nextInt(Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS5)).length)];
 					proxy = Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS))[r.nextInt(Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS)).length)];
 				}

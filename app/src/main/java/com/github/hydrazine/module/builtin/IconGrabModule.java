@@ -77,12 +77,12 @@ public class IconGrabModule implements Module
 			}
 		}
 		
-		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		Server server = new Server();
 				
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Client client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
+        Session client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
                 
-        client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
+        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
         {
             @Override
             public void handle(ServerStatusInfo info)
@@ -116,7 +116,7 @@ public class IconGrabModule implements Module
             }
         });
         
-        client.getSession().connect();
+        client.connect();
         
         while(!hasRetrieved)
         {
@@ -132,7 +132,7 @@ public class IconGrabModule implements Module
         
         System.out.println(Hydrazine.infoPrefix + "The icon has been saved to: " + outputFile.getAbsolutePath());
         
-        client.getSession().disconnect("finished.");
+        client.disconnect("finished.");
 	}
 
 	@Override

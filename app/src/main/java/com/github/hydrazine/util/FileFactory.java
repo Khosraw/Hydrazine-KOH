@@ -16,7 +16,6 @@ import com.github.hydrazine.minecraft.Credentials;
  * This class takes a file, processes it's content, and finally returns an array of a specific type.
  */
 public class FileFactory(File file) {
-
 	/**
 	 * Uses some deep magic to spawn a proxy array!
 	 *

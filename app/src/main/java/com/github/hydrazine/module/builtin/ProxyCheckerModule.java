@@ -106,7 +106,7 @@ public class ProxyCheckerModule implements Module
 				if(authFile.exists())
 				{
 					BufferedWriter w = null;
-					FileFactory authFactory = new FileFactory(authFile);
+					FileFactory authFactory = new FileFactory();
 					Proxy[] proxies = authFactory.getProxies(Proxy.Type.HTTP);
 					
 					if(settings.containsKey("outputFile"))
@@ -221,7 +221,7 @@ public class ProxyCheckerModule implements Module
 				if(socksFile.exists())
 				{
 					BufferedWriter w = null;
-					FileFactory socksFactory = new FileFactory(socksFile);
+					FileFactory socksFactory = new FileFactory();
 					Proxy[] proxies = socksFactory.getProxies(Proxy.Type.SOCKS);
 					
 					if(settings.containsKey("outputFile"))

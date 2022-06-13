@@ -64,7 +64,7 @@ public class CrackedFloodModule implements Module
 		
 		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 		
-		server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		server = new Server();
 		
 		int bots = 5;
 		int delay = 1000;
@@ -103,7 +103,7 @@ public class CrackedFloodModule implements Module
 					
 					MinecraftProtocol protocol = new MinecraftProtocol(username);
 					
-					Client client = ConnectionHelper.connect(protocol, server);
+					Session client = ConnectionHelper.connect(protocol, server);
 					
 					registerListeners(client);
 					
@@ -156,7 +156,7 @@ public class CrackedFloodModule implements Module
 					
 					MinecraftProtocol protocol = new MinecraftProtocol(username);
 					
-					Client client = ConnectionHelper.connect(protocol, server);
+					Session client = ConnectionHelper.connect(protocol, server);
 					
 					registerListeners(client);
 					
@@ -254,9 +254,9 @@ public class CrackedFloodModule implements Module
 	/*
 	 * Register listeners
 	 */
-	private void registerListeners(Client client)
+	private void registerListeners(Session client)
 	{
-		client.getSession().addListener(new SessionAdapter() 
+		client.addListener(new SessionAdapter() 
 		{
 			@Override
 			public void packetReceived(PacketReceivedEvent event) 
@@ -292,7 +292,7 @@ public class CrackedFloodModule implements Module
 			        			return;
 			        		}
 			        		
-			        		client.getSession().send(new ClientChatPacket(settings.getProperty("messageJoin")));
+			        		client.send(new ClientChatPacket(settings.getProperty("messageJoin")));
 			        		
 			        		if(settings.containsKey("secondMessageJoin") && !settings.getProperty("secondMessageJoin").isEmpty())
 			        		{
@@ -305,7 +305,7 @@ public class CrackedFloodModule implements Module
 				        			return;
 				        		}
 			        			
-			        			client.getSession().send(new ClientChatPacket(settings.getProperty("secondMessageJoin")));
+			        			client.send(new ClientChatPacket(settings.getProperty("secondMessageJoin")));
 			        		}
 			            }
 			        }
@@ -327,7 +327,7 @@ public class CrackedFloodModule implements Module
 									
 								MinecraftProtocol protocol = new MinecraftProtocol(username);
 								
-								Client client = ConnectionHelper.connect(protocol, server);
+								Session client = ConnectionHelper.connect(protocol, server);
 								
 								registerListeners(client);
 							}

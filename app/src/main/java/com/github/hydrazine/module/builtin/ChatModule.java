@@ -68,7 +68,7 @@ public class ChatModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Note: You can send a message x amount of times by adding a '%x' to the message. (Without the quotes)");
 		
 		Authenticator auth = new Authenticator();
-		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		Server server = new Server();
 		
 		// Server has offline mode enabled
 		if(Hydrazine.settings.hasSetting("username") || Hydrazine.settings.hasSetting("genuser"))
@@ -77,11 +77,11 @@ public class ChatModule implements Module
 			
 			MinecraftProtocol protocol = new MinecraftProtocol(username);
 			
-			Client client = ConnectionHelper.connect(protocol, server);
+			Session client = ConnectionHelper.connect(protocol, server);
 			
 			registerListeners(client);
 			
-			while(client.getSession().isConnected())
+			while(client.isConnected())
 			{
 				doStuff(client, sc);
 			}			
@@ -92,7 +92,7 @@ public class ChatModule implements Module
 		else if(Hydrazine.settings.hasSetting("credentials"))
 		{
 			Credentials creds = Authenticator.getCredentials();
-			Client client;
+			Session client;
 			
 			// Check if auth proxy should be used
 			if(Hydrazine.settings.hasSetting("authproxy"))
@@ -114,7 +114,7 @@ public class ChatModule implements Module
 			
 			registerListeners(client);
 			
-			while(client.getSession().isConnected())
+			while(client.isConnected())
 			{
 				doStuff(client, sc);
 			}			
@@ -223,7 +223,7 @@ public class ChatModule implements Module
 		settings.store();
 	}
 	
-	private void sendAutomatedMessage(Client client, int sendDelay, String msg)
+	private void sendAutomatedMessage(Session client, int sendDelay, String msg)
 	{
 		try 
 		{
@@ -234,13 +234,13 @@ public class ChatModule implements Module
 			e.printStackTrace();
 		}
 		
-		client.getSession().send(new ClientChatPacket(msg));
+		client.send(new ClientChatPacket(msg));
 		System.out.print(".");
 	}
 	
-	private void registerListeners(Client client)
+	private void registerListeners(Session client)
 	{
-		client.getSession().addListener(new SessionAdapter() 
+		client.addListener(new SessionAdapter() 
 		{
 			@Override
 			public void disconnected(DisconnectedEvent event) 
@@ -262,7 +262,7 @@ public class ChatModule implements Module
 	/*
 	 * Does all the input and chatting
 	 */
-	private void doStuff(Client client, Scanner sc)
+	private void doStuff(Session client, Scanner sc)
 	{					
 		int sendDelay = 1000;
 		boolean automatedMessage = false;
@@ -322,7 +322,7 @@ public class ChatModule implements Module
 			
 			for(int i = 0; i < sendTime; i++)
 			{
-				client.getSession().send(new ClientChatPacket(line));
+				client.send(new ClientChatPacket(line));
 				
 				try 
 				{

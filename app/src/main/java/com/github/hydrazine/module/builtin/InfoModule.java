@@ -49,11 +49,11 @@ public class InfoModule implements Module
 			System.exit(1);
 		}
 		
-		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		Server server = new Server();
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Client client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
+        Session client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
                                 
-        client.getSession().setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
+        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
         {
             @Override
             public void handle(ServerStatusInfo info)
@@ -73,7 +73,7 @@ public class InfoModule implements Module
             }
         });
 
-        client.getSession().setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() 
+        client.setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() 
         {
             @Override
             public void handle(long pingTime)
@@ -84,7 +84,7 @@ public class InfoModule implements Module
             }
         });
 
-        client.getSession().connect();
+        client.connect();
         
         while(hasRetrieved != 2) 
         {
@@ -98,7 +98,7 @@ public class InfoModule implements Module
             }
         }
         
-        client.getSession().disconnect(Hydrazine.infoPrefix + "Retrieved server information.");
+        client.disconnect(Hydrazine.infoPrefix + "Retrieved server information.");
 	}
 
 	@Override

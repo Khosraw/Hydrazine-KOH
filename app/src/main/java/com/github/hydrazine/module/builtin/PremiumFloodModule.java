@@ -63,7 +63,7 @@ public class PremiumFloodModule implements Module
 		System.out.println(Hydrazine.infoPrefix + "Starting module '" + getModuleName() + "'. Press CTRL + C to exit.");
 		
 		Authenticator auth = new Authenticator();
-		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
+		Server server = new Server();
 		
 		int bots = 5;
 		int delay = 1000;
@@ -133,7 +133,7 @@ public class PremiumFloodModule implements Module
 					continue;
 				}
 				
-				Client client = ConnectionHelper.connect(protocol, server);
+				Session client = ConnectionHelper.connect(protocol, server);
 				
 				registerListeners(client);
 				
@@ -214,9 +214,9 @@ public class PremiumFloodModule implements Module
 	/*
 	 * Register listeners
 	 */
-	private void registerListeners(Client client)
+	private void registerListeners(Session client)
 	{
-		client.getSession().addListener(new SessionAdapter() 
+		client.addListener(new SessionAdapter() 
 		{
 			@Override
 			public void packetReceived(PacketReceivedEvent event) 
@@ -252,7 +252,7 @@ public class PremiumFloodModule implements Module
 			        			return;
 			        		}
 			        		
-			        		client.getSession().send(new ClientChatPacket(settings.getProperty("messageJoin")));
+			        		client.send(new ClientChatPacket(settings.getProperty("messageJoin")));
 			            }
 			        }
 			    }

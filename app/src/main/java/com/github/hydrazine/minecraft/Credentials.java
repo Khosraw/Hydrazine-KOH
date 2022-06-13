@@ -5,12 +5,17 @@ package com.github.hydrazine.minecraft;
  * <p>
  * This class stores minecraft login credentials.
  */
-public class Credentials(String username, String password) {
+public class Credentials {
+	private final String username, password;
+
+	public Credentials(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 
 	/**
 	 * @return The username/email of the minecraft account
 	 */
-	@Override
 	public String username() {
 		return username;
 	}
@@ -18,7 +23,6 @@ public class Credentials(String username, String password) {
 	/**
 	 * @return The password of the minecraft account
 	 */
-	@Override
 	public String password() {
 		return password;
 	}

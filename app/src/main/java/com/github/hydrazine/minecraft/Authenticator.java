@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import com.github.steveice10.mc.auth.exception.request.RequestException;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.util.FileFactory;
@@ -35,17 +34,12 @@ public class Authenticator
 	 */
 	public MinecraftProtocol authenticate(Credentials creds, Proxy proxy)
 	{
+		Authenticator auth = new Authenticator();
 		MinecraftProtocol protocol;
-				
-		try 
-		{
-			protocol = new MinecraftProtocol(creds.username(), creds.password(), false, proxy);
-		} 
-		catch (RequestException e) 
-		{
-			System.out.println(Hydrazine.errorPrefix + "Could not authenticate " + creds.username() + ":" + creds.password() + " | " + e.getMessage());
-		}
-		
+
+
+		protocol = auth.authenticate(creds, proxy);
+
 		return protocol;
 	}
 	
@@ -57,16 +51,11 @@ public class Authenticator
 	public MinecraftProtocol authenticate(Credentials creds)
 	{
 		MinecraftProtocol protocol;
-		
-		try 
-		{
-			protocol = new MinecraftProtocol(creds.username(), creds.password(), false);
-		} 
-		catch (RequestException e) 
-		{
-			System.out.println(Hydrazine.errorPrefix + "Could not authenticate " + creds.username() + ":" + creds.password());
-		}
-		
+		String username = Authenticator.getUsername();
+
+		assert username != null;
+		protocol = new MinecraftProtocol(username);
+
 		return protocol;
 	}
 	
@@ -100,7 +89,7 @@ public class Authenticator
 				if(authFile.exists())
 				{
 					Random r = new Random();
-					FileFactory authFactory = new FileFactory(authFile);
+					FileFactory authFactory = new FileFactory();
 					proxy = Objects.requireNonNull(authFactory.getProxies(Proxy.Type.HTTP))[r.nextInt(Objects.requireNonNull(authFactory.getProxies(Proxy.Type.HTTP)).length)];
 				}
 				else

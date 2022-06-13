@@ -77,7 +77,7 @@ public class AltCheckerModule implements Module
 		if(settings.containsKey("loadFromFile") && settings.getProperty("loadFromFile").equals("true"))
 		{
 			File inputFile = new File(settings.getProperty("inputFile"));
-			FileFactory factory = new FileFactory(inputFile);
+			FileFactory factory = new FileFactory();
 			Credentials[] creds = factory.getCredentials();
 
 			assert creds != null;
