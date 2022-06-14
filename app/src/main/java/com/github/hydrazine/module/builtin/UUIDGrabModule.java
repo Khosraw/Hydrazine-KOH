@@ -53,7 +53,7 @@ public class UUIDGrabModule implements Module
 		if(settings.containsKey("inputFile") && !settings.getProperty("inputFile").isEmpty())
 		{
 			File file = new File(settings.getProperty("inputFile"));
-			FileFactory factory = new FileFactory();
+			FileFactory factory = new FileFactory(file);
 			String[] usernames = factory.getUsernames();
 			assert usernames != null;
 			for(String username : usernames)
