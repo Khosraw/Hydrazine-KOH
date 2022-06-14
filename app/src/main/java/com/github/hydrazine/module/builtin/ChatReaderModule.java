@@ -138,7 +138,7 @@ public class ChatReaderModule implements Module
 			else
 			{
 				assert creds != null;
-				protocol = auth.authenticate(creds);
+				protocol = auth.authenticate();
 
 			}
 			client = ConnectionHelper.connect(protocol, server);

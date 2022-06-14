@@ -1,6 +1,5 @@
 package com.github.hydrazine.module.builtin;
 
-import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.packetlib.ProxyInfo;
@@ -17,8 +16,6 @@ import com.github.hydrazine.minecraft.Server;
 import com.github.hydrazine.module.Module;
 
 import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
 import java.util.Arrays;
 
 /**
