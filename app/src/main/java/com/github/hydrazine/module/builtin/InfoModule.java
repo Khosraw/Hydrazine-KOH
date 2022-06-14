@@ -19,6 +19,7 @@ import com.github.hydrazine.module.Module;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
+import java.util.Arrays;
 
 /**
  * 
@@ -58,36 +59,20 @@ public class InfoModule implements Module
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
         Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, new ProxyInfo(ProxyInfo.Type.SOCKS5, new InetSocketAddress(Integer.parseInt(Hydrazine.settings.getSetting("port"))))));
                                 
-        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
-        {
-            @Override
-            public void handle(ServerStatusInfo info)
-            {
-                System.out.println(Hydrazine.infoPrefix + "Version: " + info.getVersionInfo().getVersionName() + ", Protocol Version: " + info.getVersionInfo().getProtocolVersion());
-                System.out.println(Hydrazine.infoPrefix + "Player Count: " + info.getPlayerInfo().getOnlinePlayers() + " / " + info.getPlayerInfo().getMaxPlayers());
-                System.out.print(Hydrazine.infoPrefix + "Players: ");
-                
-                for(GameProfile gp : info.getPlayerInfo().getPlayers())
-                {
-                	System.out.print(gp.getName() + " ");
-                }
-                                
-                System.out.println("\n" + Hydrazine.infoPrefix + "Description: " + info.getDescription());
-                                
-                hasRetrieved++;
-            }
-        });
+        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (ServerInfoHandler) (session, info) -> {
+			System.out.println("Version: " + info.getVersionInfo().getVersionName() + " (" + info.getVersionInfo().getProtocolVersion() + ")");
+			System.out.println("Player count: " + info.getPlayerInfo().getOnlinePlayers() + "/" + info.getPlayerInfo().getMaxPlayers());
+			System.out.println("Description: " + info.getDescription());
+			System.out.println("Icon: " + Arrays.toString(info.getIconPng()));
+		});
 
-        client.setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, new ServerPingTimeHandler() 
-        {
-            @Override
-            public void handle(long pingTime)
-            {
-                System.out.println(Hydrazine.infoPrefix + "Server Ping: " + pingTime + "ms");
-                
-                hasRetrieved++;
-            }
-        });
+        client.setFlag(MinecraftConstants.SERVER_PING_TIME_HANDLER_KEY, (ServerInfoHandler) (session, info) -> {
+					System.out.println("Version: " + info.getVersionInfo().getVersionName() + " (" + info.getVersionInfo().getProtocolVersion() + ")");
+					System.out.println("Player count: " + info.getPlayerInfo().getOnlinePlayers() + "/" + info.getPlayerInfo().getMaxPlayers());
+					System.out.println("Description: " + info.getDescription());
+					System.out.println("Icon: " + Arrays.toString(info.getIconPng()));
+				}
+        );
 
         client.connect();
         

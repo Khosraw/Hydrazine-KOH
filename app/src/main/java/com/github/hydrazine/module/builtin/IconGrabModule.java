@@ -1,23 +1,18 @@
 package com.github.hydrazine.module.builtin;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
-
-import javax.imageio.ImageIO;
-
+import com.github.hydrazine.Hydrazine;
+import com.github.hydrazine.minecraft.Server;
+import com.github.hydrazine.module.Module;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import org.spacehq.mc.protocol.data.SubProtocol;
-import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
 import com.github.steveice10.packetlib.Session;
 import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
-import com.github.hydrazine.Hydrazine;
-import com.github.hydrazine.minecraft.Server;
-import com.github.hydrazine.module.Module;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * 
@@ -78,41 +73,15 @@ public class IconGrabModule implements Module
 		
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 				
-		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
+		MinecraftProtocol protocol = new MinecraftProtocol();
         Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
-                
-        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
-        {
-            public void handle(ServerStatusInfo info)
-            {
-            	BufferedImage icon = info.getIconPng();
-				BufferedImage newIcon = new BufferedImage(icon.getWidth(), icon.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-            	
-            	for(int i = 0; i < icon.getWidth(); i++)
-            	{
-            		for(int y = 0; y < icon.getHeight(); y++)
-            		{
-            			int rgb = icon.getRGB(i, y);
-            			newIcon.setRGB(i, y, rgb);
-            		}
-            	}
-            	
-            	try 
-            	{
-					ImageIO.write(newIcon, "jpg", outputFile);
-				} 
-            	catch (IOException e) 
-            	{
-            		e.printStackTrace();
-            		
-            		System.out.println(Hydrazine.errorPrefix + "Could not write to file.");
-            		
-            		return;
-				}
-                
-                hasRetrieved = true;
-            }
-        });
+
+        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (ServerInfoHandler) (session, info) -> {
+			System.out.println("Version: " + info.getVersionInfo().getVersionName() + " (" + info.getVersionInfo().getProtocolVersion() + ")");
+			System.out.println("Player count: " + info.getPlayerInfo().getOnlinePlayers() + "/" + info.getPlayerInfo().getMaxPlayers());
+			System.out.println("Description: " + info.getDescription());
+			System.out.println("Icon: " + Arrays.toString(info.getIconPng()));
+		});
         
         client.connect();
         
