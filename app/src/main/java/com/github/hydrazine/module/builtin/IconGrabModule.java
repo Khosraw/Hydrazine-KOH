@@ -59,7 +59,6 @@ public class IconGrabModule implements Module
 		{
 			try 
 			{
-				outputFile.createNewFile();
 			}
 			catch (IOException e) 
 			{
