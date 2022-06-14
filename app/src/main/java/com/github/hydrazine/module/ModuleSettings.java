@@ -48,7 +48,7 @@ public class ModuleSettings extends Properties
 	
 	/**
 	 * Creates the config file if it is not existing
-	 * @return whether the creation suceeded or not
+	 * @return whether the creation succeeded or not
 	 */
 	public boolean createConfigFile()
 	{		
