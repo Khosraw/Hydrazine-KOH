@@ -104,7 +104,7 @@ public class ConsoleClientModule implements Module
 				Proxy proxy = Authenticator.getAuthProxy();
 
 				assert creds != null;
-				MinecraftProtocol protocol = auth.authenticate(creds, proxy);
+				MinecraftProtocol protocol = auth.authenticate(proxy);
 				
 				client = ConnectionHelper.connect(protocol, server);
 			}

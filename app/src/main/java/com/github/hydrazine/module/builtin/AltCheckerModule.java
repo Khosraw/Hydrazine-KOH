@@ -91,7 +91,7 @@ public class AltCheckerModule implements Module
 				}
 				else
 				{
-					mp = auth.authenticate(c, Authenticator.getAuthProxy());
+					mp = auth.authenticate(Authenticator.getAuthProxy());
 				}
 				
 				if(mp != null)
