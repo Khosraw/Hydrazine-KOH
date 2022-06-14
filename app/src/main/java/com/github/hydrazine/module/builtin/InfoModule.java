@@ -51,7 +51,6 @@ public class InfoModule implements Module
 		if(!Hydrazine.settings.hasSetting("host") || Hydrazine.settings.getSetting("host") == null)
 		{
 			System.out.println(Hydrazine.errorPrefix + "You have to specify a server to get the information from (-h)");
-			
 			System.exit(1);
 		}
 		
