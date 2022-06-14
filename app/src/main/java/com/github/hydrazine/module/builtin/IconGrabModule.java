@@ -72,7 +72,7 @@ public class IconGrabModule implements Module
 		}
 		
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
-			g
+			
 		MinecraftProtocol protocol = new MinecraftProtocol();
         Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
 
