@@ -89,7 +89,7 @@ public class Authenticator
 				if(authFile.exists())
 				{
 					Random r = new Random();
-					FileFactory authFactory = new FileFactory();
+					FileFactory authFactory = new FileFactory(authFile);
 					proxy = Objects.requireNonNull(authFactory.getProxies(Proxy.Type.HTTP))[r.nextInt(Objects.requireNonNull(authFactory.getProxies(Proxy.Type.HTTP)).length)];
 				}
 				else

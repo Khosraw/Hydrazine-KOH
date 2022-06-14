@@ -15,8 +15,8 @@ import com.github.hydrazine.minecraft.Credentials;
  * <p>
  * This class takes a file, processes it's content, and finally returns an array of a specific type.
  */
-public class FileFactory() {
-	final File file;
+public class FileFactory {
+	private File file;
 
 	public FileFactory(File file) {
 		this.file = file;
@@ -138,7 +138,6 @@ public class FileFactory() {
 	/**
 	 * @return the file
 	 */
-	@Override
 	public File file() {
 		return file;
 	}
