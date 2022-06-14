@@ -132,7 +132,7 @@ public class ChatReaderModule implements Module
 				Proxy proxy = Authenticator.getAuthProxy();
 
 				assert creds != null;
-				protocol = auth.authenticate(creds, proxy);
+				protocol = auth.authenticate(proxy);
 
 			}
 			else

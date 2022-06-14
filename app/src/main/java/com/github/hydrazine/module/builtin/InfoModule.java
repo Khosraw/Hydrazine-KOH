@@ -30,9 +30,7 @@ import java.util.Arrays;
  */
 public class InfoModule implements Module
 {
-	
-	private int hasRetrieved = 0;
-	
+
 	@Override
 	public String getModuleName() 
 	{
@@ -74,8 +72,9 @@ public class InfoModule implements Module
         );
 
         client.connect();
-        
-        while(hasRetrieved != 2) 
+
+		int hasRetrieved = 0;
+		while(hasRetrieved != 2)
         {
             try 
             {

@@ -121,7 +121,7 @@ public class PremiumFloodModule implements Module
 				
 				if(Hydrazine.settings.hasSetting("authproxy"))
 				{
-					protocol = auth.authenticate(creds, Authenticator.getAuthProxy());
+					protocol = auth.authenticate(Authenticator.getAuthProxy());
 				}
 				else
 				{
