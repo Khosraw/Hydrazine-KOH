@@ -1,19 +1,24 @@
 package com.github.hydrazine.module.builtin;
 
-import org.spacehq.mc.auth.data.GameProfile;
-import org.spacehq.mc.protocol.MinecraftConstants;
+import com.github.steveice10.mc.auth.data.GameProfile;
+import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
+import com.github.steveice10.packetlib.ProxyInfo;
+import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import org.spacehq.mc.protocol.data.SubProtocol;
-import org.spacehq.mc.protocol.data.status.ServerStatusInfo;
-import org.spacehq.mc.protocol.data.status.handler.ServerInfoHandler;
-import org.spacehq.mc.protocol.data.status.handler.ServerPingTimeHandler;
-import org.spacehq.packetlib.Client;
-import org.spacehq.packetlib.Session;
+import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
+import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
+import com.github.steveice10.mc.protocol.data.status.handler.ServerPingTimeHandler;
+import com.github.steveice10.packetlib.Session;
 import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Server;
 import com.github.hydrazine.module.Module;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
 
 /**
  * 
@@ -49,9 +54,9 @@ public class InfoModule implements Module
 			System.exit(1);
 		}
 		
-		Server server = new Server();
+		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Session client = new Client(server.host(), server.port(), protocol, new TcpSessionFactory());
+        Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, new ProxyInfo(ProxyInfo.Type.SOCKS5, new InetSocketAddress(Integer.parseInt(Hydrazine.settings.getSetting("port"))))));
                                 
         client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, new ServerInfoHandler() 
         {
@@ -67,7 +72,7 @@ public class InfoModule implements Module
                 	System.out.print(gp.getName() + " ");
                 }
                                 
-                System.out.println("\n" + Hydrazine.infoPrefix + "Description: " + info.getDescription().getFullText());
+                System.out.println("\n" + Hydrazine.infoPrefix + "Description: " + info.getDescription());
                                 
                 hasRetrieved++;
             }
