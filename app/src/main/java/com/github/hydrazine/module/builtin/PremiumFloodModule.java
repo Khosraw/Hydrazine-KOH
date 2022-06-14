@@ -125,7 +125,7 @@ public class PremiumFloodModule implements Module
 				}
 				else
 				{
-					protocol = auth.authenticate(creds);
+					protocol = auth.authenticate();
 				}
 				
 				if(protocol == null)
