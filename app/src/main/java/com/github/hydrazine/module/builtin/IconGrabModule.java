@@ -24,8 +24,6 @@ import java.util.Scanner;
 public class IconGrabModule implements Module
 {
 
-	private boolean hasRetrieved = false;
-	
 	@Override
 	public String getModuleName() 
 	{
@@ -59,6 +57,7 @@ public class IconGrabModule implements Module
 		{
 			try 
 			{
+				outputFile.createNewFile();
 			}
 			catch (IOException e) 
 			{
@@ -83,8 +82,9 @@ public class IconGrabModule implements Module
 		});
         
         client.connect();
-        
-        while(!hasRetrieved)
+
+		boolean hasRetrieved = false;
+		while(!hasRetrieved)
         {
         	try 
         	{
