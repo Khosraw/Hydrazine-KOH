@@ -15,30 +15,29 @@ import com.github.hydrazine.util.UsernameGenerator;
 /**
  * 
  * @author xTACTIXzZ
- * 
+ *
  * This class authenticates the clients
  *
  */
 public class Authenticator 
-{	
+{
 	public Authenticator()
 	{
-		
+
 	}
 	
 	/**
 	 * Authenticates a client using a proxy
-	 * @param creds The credentials of the minecraft account
 	 * @param proxy The proxy used to authenticate the client
 	 * @return A MinecraftProtocol which can be used to create a client object
 	 */
-	public MinecraftProtocol authenticate(Credentials creds, Proxy proxy)
+	public MinecraftProtocol authenticate(Proxy proxy)
 	{
 		Authenticator auth = new Authenticator();
 		MinecraftProtocol protocol;
 
 
-		protocol = auth.authenticate(creds, proxy);
+		protocol = auth.authenticate(proxy);
 
 		return protocol;
 	}
