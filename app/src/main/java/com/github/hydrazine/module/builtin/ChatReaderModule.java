@@ -224,7 +224,6 @@ public class ChatReaderModule implements Module
 		// Store configuration variables
 		settings.store();
 	}
-	
 	/*
 	 * Register listeners
 	 */
