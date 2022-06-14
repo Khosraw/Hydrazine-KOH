@@ -87,7 +87,7 @@ public class AltCheckerModule implements Module
 				
 				if(!Hydrazine.settings.hasSetting("ap"))
 				{
-					mp = auth.authenticate(c);
+					mp = auth.authenticate();
 				}
 				else
 				{
@@ -137,7 +137,7 @@ public class AltCheckerModule implements Module
 			Credentials c = Authenticator.getCredentials();
 
 			assert c != null;
-			MinecraftProtocol mp = auth.authenticate(c);
+			MinecraftProtocol mp = auth.authenticate();
 			
 			if(mp != null)
 			{

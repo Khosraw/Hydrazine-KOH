@@ -111,7 +111,7 @@ public class ConsoleClientModule implements Module
 			else
 			{
 				assert creds != null;
-				MinecraftProtocol protocol = auth.authenticate(creds);
+				MinecraftProtocol protocol = auth.authenticate();
 				
 				client = ConnectionHelper.connect(protocol, server);
 			}
