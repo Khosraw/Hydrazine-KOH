@@ -67,10 +67,7 @@ public class InfoModule implements Module
 
         client.connect();
 
-		int hasRetrieved = 0;
-		while(hasRetrieved != 2)
-        {
-            try 
+            try
             {
                 Thread.sleep(5);
             } 
@@ -78,8 +75,7 @@ public class InfoModule implements Module
             {
                 e.printStackTrace();
             }
-        }
-        
+
         client.disconnect(Hydrazine.infoPrefix + "Retrieved server information.");
 	}
 
