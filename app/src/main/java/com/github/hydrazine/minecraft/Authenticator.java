@@ -44,10 +44,9 @@ public class Authenticator
 	
 	/**
 	 * Authenticates a client
-	 * @param creds The credentials of the minecraft account
 	 * @return A MinecraftProtocol which can be used to create a client object
 	 */
-	public MinecraftProtocol authenticate(Credentials creds)
+	public MinecraftProtocol authenticate()
 	{
 		MinecraftProtocol protocol;
 		String username = Authenticator.getUsername();
