@@ -1,15 +1,14 @@
 package com.github.hydrazine.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Scanner;
-
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Credentials;
 import com.github.steveice10.packetlib.ProxyInfo;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * @author xTACTIXzZ
@@ -17,130 +16,131 @@ import com.github.steveice10.packetlib.ProxyInfo;
  * This class takes a file, processes it's content, and finally returns an array of a specific type.
  */
 public class FileFactory {
-	private final File file;
+    private final File file;
 
-	public FileFactory(File file) {
-		this.file = file;
-	}
+    public FileFactory(File file) {
+        this.file = file;
+    }
+
     /**
-	 * Uses some deep magic to spawn a proxy array!
-	 *
-	 * @param type The type of the proxy
-	 * @return An array of proxies, extracted from file
-	 */
-	public ProxyInfo[] getProxies(ProxyInfo.Type type) {
-		ArrayList<ProxyInfo> content = new ArrayList<>();
-		Scanner s;
+     * Uses some deep magic to spawn a proxy array!
+     *
+     * @param type The type of the proxy
+     * @return An array of proxies, extracted from file
+     */
+    public ProxyInfo[] getProxies(ProxyInfo.Type type) {
+        ArrayList<ProxyInfo> content = new ArrayList<>();
+        Scanner s;
 
-		try {
-			s = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			System.out.println(Hydrazine.errorPrefix + file.getAbsolutePath() + " not found!");
+        try {
+            s = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            System.out.println(Hydrazine.errorPrefix + file.getAbsolutePath() + " not found!");
 
-			return null;
-		}
+            return null;
+        }
 
-		while (s.hasNextLine()) {
-			String line = s.nextLine();
-			String host, port;
+        while (s.hasNextLine()) {
+            String line = s.nextLine();
+            String host, port;
 
-			if (line.contains(":")) {
-				String[] a = line.split(":");
+            if (line.contains(":")) {
+                String[] a = line.split(":");
 
-				host = a[0];
-				port = a[1];
+                host = a[0];
+                port = a[1];
 
-				int parsedPort;
+                int parsedPort;
 
-				try {
-					parsedPort = Integer.parseInt(port);
+                try {
+                    parsedPort = Integer.parseInt(port);
 
-					ProxyInfo p = new ProxyInfo(type, new InetSocketAddress(host, parsedPort));
+                    ProxyInfo p = new ProxyInfo(type, new InetSocketAddress(host, parsedPort));
 
-					content.add(p);
-				} catch (NumberFormatException ignored) {
-				}
-			}
-		}
+                    content.add(p);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
 
-		s.close();
+        s.close();
 
-		return content.toArray(new ProxyInfo[0]);
-	}
+        return content.toArray(new ProxyInfo[0]);
+    }
 
-	/**
-	 * Summons an array of credentials from a place you could never imagine!
-	 *
-	 * @return An array of credentials, extracted from file
-	 */
-	public Credentials[] getCredentials() {
-		ArrayList<Credentials> content = new ArrayList<>();
-		Scanner s;
+    /**
+     * Summons an array of credentials from a place you could never imagine!
+     *
+     * @return An array of credentials, extracted from file
+     */
+    public Credentials[] getCredentials() {
+        ArrayList<Credentials> content = new ArrayList<>();
+        Scanner s;
 
-		try {
-			s = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			System.out.println(Hydrazine.errorPrefix + file.getAbsolutePath() + " not found!");
+        try {
+            s = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            System.out.println(Hydrazine.errorPrefix + file.getAbsolutePath() + " not found!");
 
-			return null;
-		}
+            return null;
+        }
 
-		while (s.hasNextLine()) {
-			String line = s.nextLine();
-			String user, pass;
+        while (s.hasNextLine()) {
+            String line = s.nextLine();
+            String user, pass;
 
-			if (line.contains(":")) {
-				String[] a = line.split(":");
+            if (line.contains(":")) {
+                String[] a = line.split(":");
 
-				user = a[0];
-				pass = a[1];
+                user = a[0];
+                pass = a[1];
 
-				Credentials c = new Credentials(user, pass);
+                Credentials c = new Credentials(user, pass);
 
-				content.add(c);
-			}
-		}
+                content.add(c);
+            }
+        }
 
-		s.close();
+        s.close();
 
-		return content.toArray(new Credentials[0]);
-	}
+        return content.toArray(new Credentials[0]);
+    }
 
-	/**
-	 * Returns a list of usernames extracted from file
-	 *
-	 * @return An array of minecraft usernames
-	 */
-	public String[] getUsernames() {
-		ArrayList<String> content = new ArrayList<>();
-		Scanner s;
+    /**
+     * Returns a list of usernames extracted from file
+     *
+     * @return An array of minecraft usernames
+     */
+    public String[] getUsernames() {
+        ArrayList<String> content = new ArrayList<>();
+        Scanner s;
 
-		try {
-			s = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			System.out.println(Hydrazine.errorPrefix + file.getAbsolutePath() + " not found!");
+        try {
+            s = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            System.out.println(Hydrazine.errorPrefix + file.getAbsolutePath() + " not found!");
 
-			return null;
-		}
+            return null;
+        }
 
-		while (s.hasNextLine()) {
-			String line = s.nextLine();
+        while (s.hasNextLine()) {
+            String line = s.nextLine();
 
-			if (line.length() <= 16 && line.length() >= 3) {
-				content.add(line);
-			}
-		}
+            if (line.length() <= 16 && line.length() >= 3) {
+                content.add(line);
+            }
+        }
 
-		s.close();
+        s.close();
 
-		return content.toArray(new String[0]);
-	}
+        return content.toArray(new String[0]);
+    }
 
-	/**
-	 * @return the file
-	 */
-	public File file() {
-		return file;
-	}
+    /**
+     * @return the file
+     */
+    public File file() {
+        return file;
+    }
 
 }
