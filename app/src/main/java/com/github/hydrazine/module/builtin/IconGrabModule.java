@@ -7,7 +7,7 @@ import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
 import com.github.steveice10.packetlib.Session;
-import org.spacehq.packetlib.tcp.TcpSessionFactory;
+import com.github.steveice10.packetlib.tcp.TcpClientSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class IconGrabModule implements Module
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
 
 		MinecraftProtocol protocol = new MinecraftProtocol();
-        Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpSessionFactory());
+        Session client = new TcpClientSession(server.getHost(), server.getPort(), protocol);
 
         client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (ServerInfoHandler) (session, info) -> {
 			System.out.println("Version: " + info.getVersionInfo().getVersionName() + " (" + info.getVersionInfo().getProtocolVersion() + ")");
