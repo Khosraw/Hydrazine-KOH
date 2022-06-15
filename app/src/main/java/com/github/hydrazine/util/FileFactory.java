@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Credentials;
+import com.github.steveice10.packetlib.ProxyInfo;
 
 /**
  * @author xTACTIXzZ
@@ -16,7 +17,7 @@ import com.github.hydrazine.minecraft.Credentials;
  * This class takes a file, processes it's content, and finally returns an array of a specific type.
  */
 public class FileFactory {
-	private File file;
+	private final File file;
 
 	public FileFactory(File file) {
 		this.file = file;
@@ -27,8 +28,8 @@ public class FileFactory {
 	 * @param type The type of the proxy
 	 * @return An array of proxies, extracted from file
 	 */
-	public Proxy[] getProxies(Proxy.Type type) {
-		ArrayList<Proxy> content = new ArrayList<>();
+	public ProxyInfo[] getProxies(ProxyInfo.Type type) {
+		ArrayList<ProxyInfo> content = new ArrayList<>();
 		Scanner s;
 
 		try {
@@ -54,7 +55,7 @@ public class FileFactory {
 				try {
 					parsedPort = Integer.parseInt(port);
 
-					Proxy p = new Proxy(type, new InetSocketAddress(host, parsedPort));
+					ProxyInfo p = new ProxyInfo(type, new InetSocketAddress(host, parsedPort));
 
 					content.add(p);
 				} catch (NumberFormatException ignored) {
@@ -64,7 +65,7 @@ public class FileFactory {
 
 		s.close();
 
-		return content.toArray(new Proxy[0]);
+		return content.toArray(new ProxyInfo[0]);
 	}
 
 	/**

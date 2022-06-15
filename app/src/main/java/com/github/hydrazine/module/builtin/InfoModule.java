@@ -2,17 +2,14 @@ package com.github.hydrazine.module.builtin;
 
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import com.github.steveice10.packetlib.ProxyInfo;
 import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler;
 import com.github.steveice10.packetlib.Session;
-import org.spacehq.packetlib.tcp.TcpSessionFactory;
 
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Server;
 import com.github.hydrazine.module.Module;
 
-import java.net.InetSocketAddress;
 import java.util.Arrays;
 
 /**
@@ -47,8 +44,8 @@ public class InfoModule implements Module
 		}
 		
 		Server server = new Server(Hydrazine.settings.getSetting("host"), Integer.parseInt(Hydrazine.settings.getSetting("port")));
-		MinecraftProtocol protocol = new MinecraftProtocol(SubProtocol.STATUS);
-        Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, new ProxyInfo(ProxyInfo.Type.SOCKS5, new InetSocketAddress(Integer.parseInt(Hydrazine.settings.getSetting("port"))))));
+		MinecraftProtocol protocol = new MinecraftProtocol();
+        Session client = new TcpClientSession(server.getHost(), server.getPort(), protocol);
                                 
         client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, (ServerInfoHandler) (session, info) -> {
 			System.out.println("Version: " + info.getVersionInfo().getVersionName() + " (" + info.getVersionInfo().getProtocolVersion() + ")");

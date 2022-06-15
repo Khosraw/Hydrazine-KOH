@@ -2,8 +2,6 @@ package com.github.hydrazine.util;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.Objects;
 import java.util.Random;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
@@ -15,21 +13,22 @@ import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import com.github.hydrazine.Hydrazine;
 import com.github.hydrazine.minecraft.Server;
 
+
 /**
- * 
+ *
  * @author xTACTIXzZ
- * 
+ *
  * This class helps connecting a client to a server. It respects the user-specified settings.
  *
  */
-public class ConnectionHelper 
+public class ConnectionHelper
 {
-	
+
 	public ConnectionHelper()
 	{
-		
+
 	}
-	
+
 	/**
 	 * Registers default listeners to a client
 	 */
@@ -43,15 +42,15 @@ public class ConnectionHelper
 			{
 				System.out.println(Hydrazine.infoPrefix + ((MinecraftProtocol) client.getPacketProtocol()).getProfile().getName() + " connected to the server!");
 			}
-			
+
 			@Override
-			public void disconnected(DisconnectedEvent event) 
+			public void disconnected(DisconnectedEvent event)
 			{
-				System.out.println(Hydrazine.infoPrefix + "Client disconnected: " + event.getReason());  
+				System.out.println(Hydrazine.infoPrefix + "Client disconnected: " + event.getReason());
 			}
 		});
 	}
-	
+
 	/**
 	 * Connects a client to a server
 	 */
@@ -62,63 +61,60 @@ public class ConnectionHelper
 		{
 			return null;
 		}
-		
+
 		// Check if socks proxy should be used
 		if(Hydrazine.settings.hasSetting("socksproxy"))
 		{
-			Proxy proxy;
-			ProxyInfo proxyInfo;
-			
+			ProxyInfo proxy;
+
 			if(Hydrazine.settings.getSetting("socksproxy").contains(":"))
 			{
 				try
 				{
 					String[] parts = Hydrazine.settings.getSetting("socksproxy").split(":");
-					proxyInfo = new ProxyInfo(ProxyInfo.Type.SOCKS5, new InetSocketAddress(parts[0], Integer.parseInt(parts[1])));
-					proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(parts[0], Integer.parseInt(parts[1])));
+					proxy = new ProxyInfo(ProxyInfo.Type.SOCKS5, new InetSocketAddress(parts[0], Integer.parseInt(parts[1])));
 				}
 				catch(Exception e)
 				{
 					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch -sp");
-					
+
 					return null;
 				}
 			}
 			else
 			{
 				File socksFile = new File(Hydrazine.settings.getSetting("socksproxy"));
-				
+
 				if(socksFile.exists())
 				{
 					Random r = new Random();
-					FileFactory socksFactory = new FileFactory();
-					proxyInfo = Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS))[r.nextInt(Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS5)).length)];
-					proxy = Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS))[r.nextInt(Objects.requireNonNull(socksFactory.getProxies(Proxy.Type.SOCKS)).length)];
+					FileFactory socksFactory = new FileFactory(socksFile);
+					proxy = socksFactory.getProxies(ProxyInfo.Type.SOCKS5)[r.nextInt(socksFactory.getProxies(ProxyInfo.Type.SOCKS5).length)];
 				}
 				else
 				{
 					System.out.println(Hydrazine.errorPrefix + "Invalid value for switch -sp");
-					
+
 					return null;
 				}
 			}
-			
-			Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, proxyInfo));
-			
+
+			Session client = new TcpClientSession(server.getHost(), server.getPort(), protocol, proxy);
+
 			registerDefaultListeners(client);
-						
+
 			client.connect();
-			
+
 			return client;
 		}
 		else
 		{
-			Session client = new Session(server.getHost(), server.getPort(), protocol, new TcpClientSession(server.getHost(), server.getPort(), protocol, new ProxyInfo()));
-			
+			Session client = new TcpClientSession(server.getHost(), server.getPort(), protocol);
+
 			registerDefaultListeners(client);
-						
+
 			client.connect();
-			
+
 			return client;
 		}
 	}

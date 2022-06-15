@@ -56,7 +56,6 @@ public class UsernameGenerator
 	
 	/**
 	 * Generates a completely random username 
-	 * @param length The desired length the username should have
 	 * @return A generated, valid minecraft username
 	 */
 	public String generateRandom()
