@@ -347,6 +347,9 @@ public class Hydrazine {
         loadedModules.add(proxyCheckerM);
     }
 
+    public Object getGreeting() {
+        return "Hi";
+    }
 }
 
 class ShutDownThread extends Thread {

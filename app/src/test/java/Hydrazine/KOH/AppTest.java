@@ -3,12 +3,13 @@
  */
 package Hydrazine.KOH;
 
+import com.github.hydrazine.Hydrazine;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AppTest {
     @Test public void appHasAGreeting() {
-        App classUnderTest = new App();
+        Hydrazine classUnderTest = new Hydrazine();
         assertNotNull("app should have a greeting", classUnderTest.getGreeting());
     }
 }
